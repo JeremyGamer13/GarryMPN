@@ -1,0 +1,25 @@
+{
+    "name": "garrympn",
+    "version": "1.0.0",
+    "description": "Make simple Player Model & NPC Garry's Mod addon structures with an SMD model and VTF textures.",
+    "license": "MIT",
+    "author": "",
+    "type": "commonjs",
+    "main": "index.js",
+    "scripts": {
+        "clibuild": "node build-cli"
+    },
+    "dependencies": {
+        "canvas": "^3.1.2",
+        "pkg": "^5.8.1"
+    },
+    "pkg": {
+        "scripts": ["cli/index.js"],
+        "assets": [
+            "node_modules/canvas/build/Release/canvas.node",
+            "node_modules/canvas/build/**/*"
+        ],
+        "targets": ["node18-win-x64"],
+        "outputPath": "./build"
+    }
+}

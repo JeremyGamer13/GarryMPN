@@ -1,0 +1,12 @@
+# node things
+node_modules/*
+
+# runtim files
+temp/*
+cache/*
+
+# buiild files
+build/*
+
+# dev temp files
+.dev/*
