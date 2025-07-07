@@ -60,6 +60,18 @@ for (let i = 0; i < exeArgv.length; i++) {
             if (exeParams.vmtsim) options.selfIlluminationMask = exeParams.vmtsim;
             GarryMPN.vmtMake(exeParams.vmt, exeParams.vmto, options);
         }
+        // lua optionally luar, luapm, luapmn, luaph, luaphs, luaphb, luaphm
+        if (param === "lua") {
+            const options = {};
+            if (exeParams.luar) options.rawLines = JSON.parse(exeParams.luar);
+            if (exeParams.luapm) options.playerModel = exeParams.luapm;
+            if (exeParams.luapmn) options.playerModelName = exeParams.luapmn;
+            if (exeParams.luaph) options.playerHands = exeParams.luaph;
+            if (exeParams.luaphs) options.playerHandsSkin = Number(exeParams.luaphs);
+            if (exeParams.luaphb) options.playerHandsBodygroups = exeParams.luaphb;
+            if (exeParams.luaphm) options.playerHandsMatchBodySkin = String(exeParams.luaphm) === "true";
+            GarryMPN.luaMake(exeParams.lua, options);
+        }
         // npciconf, npciconh with npciconfout, npciconhout optionally npciconfb, npciconff, npciconfr, npciconhb, npciconhf, npciconhr
         if (param === "npciconf") {
             if (!exeParams.npciconfout) throw new Error("Specify npciconfout for a target PNG path to output the friendly NPC icon to");
