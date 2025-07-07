@@ -1,4 +1,13 @@
-[ ] figure out anything needed to make the pms & npcs & models that can be automated
-[ ] add waiting for a path to exist with specified timeout
+# For now
+[x] add waiting for a path to exist with specified timeout
+[x] add basic vmt gen
 [ ] add lua gen
 [ ] add gui
+
+# For later
+[ ] allow vmt gen to add everything source supports for materials
+[ ] actually verify vmt gen can do everything it supports
+[ ] convert images to vtf automatically
+
+# For always
+- figure out anything needed to make the pms & npcs & models that can be automated and add it here
