@@ -1,0 +1,52 @@
+{
+    "appId": "com.jeremygamer13.garrympn",
+    "artifactName": "garrympn_${os}_${arch}.${ext}",
+    "executableName": "GarryMPN",
+    "productName": "GarryMPN",
+    "directories": {
+        "output": "build"
+    },
+    "win": {
+        "target": ["zip", "nsis", "msi"]
+    },
+    "mac": {
+        "appId": "com.jeremygamer13.garrympn",
+        "category": "public.app-category.developer-tools"
+    },
+    "msi": {
+        "artifactName": "garrympn_${os}_${arch}.${ext}"
+    },
+    "nsis": {
+        "artifactName": "garrympn_${os}_${arch}.${ext}",
+        "deleteAppDataOnUninstall": true
+    },
+    "extraFiles": [
+        {
+            "from": "build/garrympn-cli.exe",
+            "to": "garrympn-cli.exe"
+        },
+        {
+            "from": "LICENSE",
+            "to": "LICENSE.garrympn.txt"
+        },
+        {
+            "from": "README.gui.md",
+            "to": "README.txt"
+        }
+    ],
+    "files": [
+        {
+            "from": "gui",
+            "to": ".",
+            "filter": [
+                "**/*"
+            ]
+        },
+        "!cli/*",
+        "!build/*",
+        "!src/*",
+        "!temp/*",
+        "!cache/*",
+        "!.dev/*"
+    ]
+}

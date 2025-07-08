@@ -1,6 +1,6 @@
 {
     "watch": [
-        "gui/app.js",
+        "gui/index.js",
         "gui/preload.js",
         "gui/*.png",
         "gui/*.ico",
@@ -11,5 +11,5 @@
     "ignore": [
         "node_modules"
     ],
-    "exec": "electron gui/app.js"
+    "exec": "electron gui/index.js"
 }

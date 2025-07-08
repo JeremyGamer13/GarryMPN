@@ -1,47 +1,164 @@
-(() => {
-    const appNavbar = document.getElementById("app-navbar");
-    const appNavbarHome = document.getElementById("app-navbar-home");
-    const appBlur = document.getElementById("app-blur");
+const fs = require("fs");
+const path = require("path");
+const electron = require('electron');
 
-    const appContent = document.getElementById("app-content");
-    const appTab = document.getElementById("app-tab");
-    const appSidebar = document.getElementById("app-sidebar");
-
-    // tab buttons
-    let activeTab = "none";
-    const activeTabUpdated = () => {
-        appTab.dataset.selected = activeTab;
-
-        const event = new CustomEvent("garrympn-tab-updated", { detail: activeTab });
-        document.dispatchEvent(event);
-
-        for (const child of appTab.getElementsByTagName("div")) {
-            if (child.id.startsWith("app-tab")) {
-                child.style.display = "none";
+// NOTE: MacOS & Linux support is intended but not tested
+const devMode = !electron.app.isPackaged;
+const createWindow = () => {
+    const display = electron.screen.getPrimaryDisplay();
+    const { width, height } = display.workAreaSize;
+    const win = new electron.BrowserWindow({
+        title: "GarryMPN",
+        icon: "icon.ico",
+        width: Math.round(Math.max(0, width / 1.4)),
+        height: Math.round(Math.max(0, height / 1.4)),
+        webPreferences: {
+            preload: path.join(__dirname, "preload.js"),
+        }
+    });
+    
+    if (devMode) {
+        win.webContents.openDevTools();
+    } else {
+        win.removeMenu();
+    }
+    win.loadURL('app://main/');
+}
+const createResponseText = (fileName, contentType) => {
+    return new Response(fs.readFileSync(path.join(__dirname, fileName), "utf8"), { headers: { 'Content-Type': contentType } });
+};
+const createResponseBuffer = (fileName, contentType) => {
+    return new Response(fs.readFileSync(path.join(__dirname, fileName)), { headers: { 'Content-Type': contentType } });
+};
+const createProtocols = () => {
+    electron.protocol.handle('app', (req) => {
+        const url = new URL(req.url);
+        switch (url.hostname) {
+            case "main": {
+                switch (url.pathname) {
+                    case "/": return createResponseText("index.html", "text/html");
+                }
+                break;
+            }
+            case "js": {
+                switch (url.pathname) {
+                    case "/": return createResponseText("mainpage.js", "text/javascript");
+                    case "/addon-builder": return createResponseText("addon-builder.js", "text/javascript");
+                    case "/util-loader": return createResponseText("util-loader.js", "text/javascript");
+                }
+                break;
+            }
+            case "css": {
+                switch (url.pathname) {
+                    case "/": return createResponseText("assets/index.css", "text/css");
+                    case "/home": return createResponseText("assets/home.css", "text/css");
+                    case "/addon": return createResponseText("assets/addon.css", "text/css");
+                }
+                break;
             }
         }
 
-        const wantedTab = document.getElementById("app-tab-" + activeTab);
-        if (!wantedTab) return;
-        wantedTab.style.display = "";
-    };
-    for (const child of appSidebar.getElementsByTagName("button")) {
-        if (!child.dataset.tab) continue;
+        return new Response('Invalid', {
+            status: 400,
+            headers: { 'Content-Type': 'text/html' }
+        });
+    });
+    electron.protocol.handle('asset', (req) => {
+        const url = new URL(req.url);
+        switch (url.pathname) {
+            case "/icon.png": return createResponseBuffer("icon.png", "image/png");
+            case "/loader.png": return createResponseBuffer("assets/loader.png", "image/png");
+            case "/loader-guy.png": return createResponseBuffer("assets/loader-guy.png", "image/png");
+        }
 
-        const newTab = child.dataset.tab;
-        child.onclick = () => {
-            if (appBlur.dataset.enabled === "true") return;
-            activeTab = newTab;
-            activeTabUpdated();
-        };
+        return new Response('Invalid', {
+            status: 400,
+            headers: { 'Content-Type': 'text/html' }
+        });
+    });
+};
+const createIpcHandlers = () => {
+    electron.ipcMain.handle("garrympn-invoke-cli", (_, argsObj) => {
+        // TODO: Invoke the CLI with argsObj, key:value pairs handled like "-key value"
+        /*
+            TODO: We should validate paths passed to the CLI, basically
+            the UI can tell the main process to open a file picker and
+            we add the result of that to a whitelist of paths.
+        */
+        console.log(argsObj);
+        electron.dialog.showMessageBox(electron.BrowserWindow.getFocusedWindow(), {
+            message: path.join(__dirname, "garrympn-cli.exe")
+        });
+        console.log(path.join(__dirname, "garrympn-cli.exe"));
+        return "wow the cli really said this";
+    });
+};
+
+electron.protocol.registerSchemesAsPrivileged([
+    {
+        scheme: 'app',
+        privileges: {
+            standard: true,
+            secure: true
+        }
     }
-    appNavbarHome.onclick = () => {
-        if (appBlur.dataset.enabled === "true") return;
-        activeTab = "home";
-        activeTabUpdated();
-    };
+]);
 
-    // default tab is home
-    activeTab = "home";
-    activeTabUpdated();
-})();
+electron.app.whenReady().then(() => {
+    electron.app.setAppUserModelId('com.jeremygamer13.garrympn');
+    createProtocols();
+    createIpcHandlers();
+    createWindow();
+    
+    electron.app.on('activate', () => {
+        if (electron.BrowserWindow.getAllWindows().length === 0) {
+            createWindow();
+        }
+    });
+    electron.session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
+        const url = new URL(details.url);
+
+        // check if this is a whitelisted protocol
+        const allowedProtocols = ["devtools:", "app:", "asset:", "cli:"];
+        if (allowedProtocols.includes(url.protocol)) return callback({});
+
+        // if https: then see if we process the site
+        if (url.protocol === "https:") {
+            if (url.origin === "https://avatars.githubusercontent.com") return callback({});
+            if (url.origin === "https://github.com") {
+                // for github we only allow the .png user images
+                if (url.pathname.match(/\//g).length > 1) return callback({ cancel: true });
+                if (!url.pathname.endsWith(".png")) return callback({ cancel: true });
+                return callback({});
+            }
+            return callback({ cancel: true });
+        }
+
+        return callback({ cancel: true });
+    });
+});
+electron.app.on('web-contents-created', (event, contents) => {
+    contents.on('will-navigate', (event) => {
+        event.preventDefault();
+    });
+    contents.on('will-redirect', (event) => {
+        event.preventDefault();
+    });
+    contents.setWindowOpenHandler((detail) => {
+        const allowedUrlsExternal = [
+            "https://github.com/JeremyGamer13/GarryMPN",
+        ];
+        if (allowedUrlsExternal.includes(detail.url)) {
+            console.log("Opening", detail.url, "externally");
+            electron.shell.openExternal(detail.url);
+            return { action: 'deny' };
+        }
+        return { action: 'deny' };
+    });
+});
+
+electron.app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        electron.app.quit();
+    }
+});

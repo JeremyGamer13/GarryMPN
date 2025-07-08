@@ -7,9 +7,10 @@
     "type": "commonjs",
     "main": "index.js",
     "scripts": {
-        "gui": "electron gui/app.js",
-        "gui:dev": "nodemon",
-        "clibuild": "node build-cli"
+        "gui": "electron gui/index.js",
+        "gui:dev": "nodemon gui/index.js",
+        "gui:build": "electron-builder build --config electron-builder.json",
+        "cli:build": "node build-cli"
     },
     "dependencies": {
         "canvas": "^3.1.2"
@@ -29,6 +30,8 @@
     },
     "devDependencies": {
         "electron": "^37.2.0",
+        "electron-builder": "^26.0.12",
+        "electron-builder-squirrel-windows": "^26.0.12",
         "nodemon": "^3.1.10",
         "pkg": "^5.8.1"
     }
