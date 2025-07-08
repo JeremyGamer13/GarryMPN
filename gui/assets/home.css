@@ -1,0 +1,17 @@
+#app-tab-home {
+    padding: 4px;
+
+    text-align: justify;
+}
+.inner-home-logo {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.inner-home-contributor {
+    height: 3em;
+
+    border-radius: 1024px;
+}

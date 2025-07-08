@@ -3,10 +3,72 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' app: asset:; script-src 'self' app: asset:; style-src 'self' 'unsafe-inline' app: asset:; img-src 'self' app: asset: data: https:;">
         <title>GarryMPN</title>
+        <link href="app://css/" rel="stylesheet">
+        <link href="app://css/home" rel="stylesheet">
+        <link href="app://css/addon" rel="stylesheet">
     </head>
     <body>
-        <h1>yea</h1>
+        <div id="app-blur" data-enabled="false">
+            <p id="app-blur-message">Text</p>
+            <img draggable="false" src="asset://asset/loader-guy.png">
+        </div>
+        <div id="app-navbar">
+            <button id="app-navbar-home">
+                <img draggable="false" src="asset://asset/icon.png">
+            </button>
+            <h1>GarryMPN</h1>
+        </div>
+        <main>
+            <div id="app-content">
+                <div id="app-sidebar">
+                    <button id="tab-home" data-tab="home">Home</button>
+                    <button id="tab-addon" data-tab="addon">New Addon</button>
+                </div>
+                <div id="app-tab" data-selected="none">
+                    <div id="app-tab-home">
+                        <div class="inner-home-logo">
+                            <img draggable="false" src="asset://asset/icon.png">
+                            <h1>GarryMPN</h1>
+                        </div>
+                        <p>
+                            GarryMPN is a program to make simple Player Model & NPC
+                            Garry's Mod addon structures with an MDL model and VTF textures.
+                        </p>
+                        <p>
+                            Note that this program mainly automates taking the puzzle pieces of
+                            models and textures and making an addon out of those. You won't get
+                            super complicated addons made with this program alone.
+                        </p>
+                        <p>Developed by JeremyGamer13</p>
+                        <img class="inner-home-contributor" alt="JeremyGamer13" src="https://github.com/JeremyGamer13.png">
+                        <p class="style-small">
+                            See <a href="https://github.com/JeremyGamer13/GarryMPN" target="_blank" style="color:white">GitHub</a>
+                        </p>
+                        <br>
+                        <p class="style-small">
+                            Garry's Mod is a trademark of Facepunch Studios.
+                            <br>
+                            GarryMPN is an independent project and is not affiliated with, endorsed by, or sponsored by Facepunch Studios or Valve Corporation.
+                            <br>
+                            All trademarks are property of their respective owners.
+                        </p>
+                        <p class="style-small style-far">
+                            Version 1.0.0
+                        </p>
+                    </div>
+                    <div id="app-tab-addon" style="display: none;">
+                        <h1>Addon Builder</h1>
+                        <p id="inner-addon-info" class="style-small">
+                            This is the Addon Builder menu. See inputs below.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <script src="app://js/util-loader"></script>
+        <script src="app://js/"></script>
+        <script src="app://js/addon-builder"></script>
     </body>
 </html>

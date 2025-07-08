@@ -1,2 +1,2 @@
 # GarryMPN
-Make simple Player Model & NPC Garry's Mod addon structures with an SMD model and VTF textures.
+Make simple Player Model & NPC Garry's Mod addon structures with an MDL model and VTF textures.

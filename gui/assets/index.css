@@ -1,0 +1,196 @@
+/* everything */
+html, body, main {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+main {
+    height: calc(100% - 4em);
+    margin-top: 4em;
+
+    background: #111;
+    color: white;
+    overflow: auto;
+}
+html, body, main, input, button, form, textarea {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+/* default elements */
+button {
+    filter: brightness(1);
+    transition: 0.2s;
+    transition-property: filter;
+    overflow: hidden;
+
+    cursor: pointer;
+}
+button:active img {
+    transform: translateY(1px);
+}
+button:hover {
+    filter: brightness(1.1);
+    transition: 0.2s;
+    transition-property: filter;
+}
+button::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10em;
+    height: 10em;
+    
+    content: '';
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    aspect-ratio: 1 / 1;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.1s ease;
+
+    z-index: 0;
+}
+button:hover::before {
+    transform: translate(-50%, -50%) scale(0.5);
+}
+button:active::before {
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.2s ease;
+}
+
+/* simple styles */
+.style-small {
+    font-size: 12px;
+}
+.style-far {
+    opacity: 0.5;
+}
+
+/* loader */
+#app-blur {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    opacity: 0;
+    font-weight: bold;
+    text-shadow: 0 0 4px black,
+        0 0 4px black,
+        0 0 8px black,
+        0 0 8px black,
+        0 0 8px black;
+    transition: opacity 0.5s;
+
+    user-select: none;
+    z-index: 99999;
+}
+#app-blur img {
+    height: 3em;
+
+    animation: app-blur-loader 6s linear 0s infinite forwards;
+}
+#app-blur[data-enabled="true"] {
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+#app-blur[data-enabled="false"] {
+    pointer-events: none;
+}
+@keyframes app-blur-loader {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-180deg); }
+    100% { transform: rotate(-360deg); }
+}
+
+/* app specific */
+#app-navbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 4em;
+    
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    background: #0082FF;
+    color: white;
+    overflow: hidden;
+
+    user-select: none;
+    z-index: 9999;
+}
+.app-navbar-margin {
+    width: 100%;
+    height: 4em;
+}
+
+#app-navbar > button {
+    height: calc(100% - 8px);
+    margin: 4px 0;
+    margin-right: 4px;
+
+    background: transparent;
+    color: white;
+    outline: 0;
+    border: 0;
+}
+#app-navbar > button img {
+    height: 100%;
+
+    user-select: none;
+}
+
+#app-content {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+}
+#app-sidebar {
+    width: 256px;
+    height: calc(100% - 48px);
+    padding: 24px 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+#app-sidebar button {
+    width: calc(100% - 16px);
+    height: 32px;
+    margin-bottom: 8px;
+
+    border: 1px solid rgb(34, 34, 34);
+    background: rgb(77, 77, 77);
+    color: white;
+    border-radius: 2px;
+    transition: filter 0s;
+}
+#app-sidebar button:active {
+    filter: brightness(0.75);
+    transition: filter 0s;
+}
+#app-tab {
+    width: calc(100% - 256px);
+    height: 100%;
+
+    overflow: auto;
+}

@@ -1,74 +1,47 @@
-const fs = require("fs");
-const path = require("path");
-const electron = require('electron');
+(() => {
+    const appNavbar = document.getElementById("app-navbar");
+    const appNavbarHome = document.getElementById("app-navbar-home");
+    const appBlur = document.getElementById("app-blur");
 
-// NOTE: MacOS & Linux support is intended but not tested
-const createWindow = () => {
-    const win = new electron.BrowserWindow({
-        title: "GarryMPN",
-        icon: "icon.ico",
-        width: 800,
-        height: 600,
-    });
-    
-    win.removeMenu();
-    win.loadURL('app://main');
-}
-const createProtocols = () => {
-    electron.protocol.handle('app', (req) => {
-        const url = new URL(req.url);
-        switch (url.hostname + url.pathname) {
-            case "main/": {
-                const html = fs.readFileSync(path.join(__dirname, "index.html"), "utf8");
-                return new Response(html, {
-                    headers: { 'Content-Type': 'text/html' }
-                });
+    const appContent = document.getElementById("app-content");
+    const appTab = document.getElementById("app-tab");
+    const appSidebar = document.getElementById("app-sidebar");
+
+    // tab buttons
+    let activeTab = "none";
+    const activeTabUpdated = () => {
+        appTab.dataset.selected = activeTab;
+
+        const event = new CustomEvent("garrympn-tab-updated", { detail: activeTab });
+        document.dispatchEvent(event);
+
+        for (const child of appTab.getElementsByTagName("div")) {
+            if (child.id.startsWith("app-tab")) {
+                child.style.display = "none";
             }
         }
-    });
-};
 
-electron.protocol.registerSchemesAsPrivileged([
-    {
-        scheme: 'app',
-        privileges: {
-            standard: true,
-            secure: true
-        }
+        const wantedTab = document.getElementById("app-tab-" + activeTab);
+        if (!wantedTab) return;
+        wantedTab.style.display = "";
+    };
+    for (const child of appSidebar.getElementsByTagName("button")) {
+        if (!child.dataset.tab) continue;
+
+        const newTab = child.dataset.tab;
+        child.onclick = () => {
+            if (appBlur.dataset.enabled === "true") return;
+            activeTab = newTab;
+            activeTabUpdated();
+        };
     }
-]);
+    appNavbarHome.onclick = () => {
+        if (appBlur.dataset.enabled === "true") return;
+        activeTab = "home";
+        activeTabUpdated();
+    };
 
-electron.app.whenReady().then(() => {
-    electron.app.setAppUserModelId('com.jeremygamer13.garrympn');
-    createProtocols();
-    createWindow();
-    
-    electron.app.on('activate', () => {
-        if (electron.BrowserWindow.getAllWindows().length === 0) {
-            createWindow();
-        }
-    })
-    electron.session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
-        const url = new URL(details.url);
-        const allowedProtocols = ["devtools:", "app:"];
-        if (!allowedProtocols.includes(url.protocol)) return callback({ cancel: true });
-        callback({});
-    });
-});
-electron.app.on('web-contents-created', (event, contents) => {
-    contents.on('will-navigate', (event) => {
-        event.preventDefault();
-    });
-    contents.on('will-redirect', (event) => {
-        event.preventDefault();
-    });
-    contents.setWindowOpenHandler(() => {
-        return { action: 'deny' };
-    });
-});
-
-electron.app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        electron.app.quit();
-    }
-});
+    // default tab is home
+    activeTab = "home";
+    activeTabUpdated();
+})();

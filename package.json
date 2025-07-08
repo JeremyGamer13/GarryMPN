@@ -1,13 +1,13 @@
 {
     "name": "garrympn",
     "version": "1.0.0",
-    "description": "Make simple Player Model & NPC Garry's Mod addon structures with an SMD model and VTF textures.",
+    "description": "Make simple Player Model & NPC Garry's Mod addon structures with an MDL model and VTF textures.",
     "license": "MIT",
-    "author": "",
+    "author": "JeremyGamer13",
     "type": "commonjs",
     "main": "index.js",
     "scripts": {
-        "gui": "electron gui/index.js",
+        "gui": "electron gui/app.js",
         "gui:dev": "nodemon",
         "clibuild": "node build-cli"
     },

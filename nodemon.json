@@ -1,10 +1,15 @@
 {
     "watch": [
-        "gui/"
+        "gui/app.js",
+        "gui/preload.js",
+        "gui/*.png",
+        "gui/*.ico",
+        "gui/assets/*.png",
+        "gui/assets/*.ico"
     ],
     "ext": "js,json,html,css,bat,png,jpeg,jpg,jfif,gif,mp3,ogg,wav,flac,mp4,webm,webp",
     "ignore": [
         "node_modules"
     ],
-    "exec": "electron gui/index.js"
+    "exec": "electron gui/app.js"
 }
