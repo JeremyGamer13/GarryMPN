@@ -36,6 +36,28 @@ module.exports = (outPath, options = {}) => {
             luaLines.push(`player_manager.AddValidHands(${quotes(options.playerModelName)}, ${quotes(options.playerHands)}, ${skin}, ${bodyGroups})`);
         }
     }
+    // npcFriendly, npcFriendlyName, npcFriendlyModel, npcFriendlyClass, npcFriendlyHealth, npcFriendlyAuthor, npcFriendlyCategory, npcFriendlyAdminOnly
+    for (let i = 0; i < 2; i++) {
+        const prefix = i === 0 ? "npcFriendly" : "npcHostile";
+        if (options[prefix]) {
+            if (!options[prefix + "Model"]) throw new Error(`${prefix} specified without ${prefix + "Model"}`);
+            const npcClass = options[prefix + "Class"] || (i === 0 ? "npc_citizen" : "npc_combine");
+            const npcHealth = typeof options[prefix + "Health"] === "number" ? options[prefix + "Health"] : 100;
+            luaLines.push(`list.Set("NPC", ${quotes(options[prefix])}, {`);
+            luaLines.push(`\tName = ${quotes(options[prefix + "Name"] || options[prefix])},`);
+            luaLines.push(`\tClass = ${quotes(npcClass)},`);
+            luaLines.push(`\tModel = ${quotes(options[prefix + "Model"])},`);
+            luaLines.push(`\tHealth = ${num(npcHealth)},`);
+            luaLines.push(`\tCategory = ${quotes(options[prefix + "Category"] || "Other")},`);
+            if (options[prefix + "Author"]) {
+                luaLines.push(`\tAuthor = ${quotes(options[prefix + "Author"])},`);
+            }
+            if (options[prefix + "AdminOnly"]) {
+                luaLines.push(`\tAdminOnly = true,`);
+            }
+            luaLines.push(`})`);
+        }
+    }
 
     // raw lines at the end
     if (options.rawLines) {

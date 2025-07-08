@@ -50,17 +50,18 @@ for (let i = 0; i < exeArgv.length; i++) {
             const options = {};
             if (exeParams.vmtr) options.rawLines = JSON.parse(exeParams.vmtr);
             if (exeParams.vmtb) options.baseTexture = exeParams.vmtb;
-            if (exeParams.vmtm || Object.hasOwn(exeParams, "vmtm")) options.forModel = true;
+            if (Object.hasOwn(exeParams, "vmtm")) options.forModel = true;
             if (exeParams.vmtsp) options.surfaceProp = exeParams.vmtsp;
             if (exeParams.vmtem) options.environmentMap = exeParams.vmtem;
             if (exeParams.vmtbm) options.bumpMap = exeParams.vmtbm;
             if (exeParams.vmtd) options.detail = exeParams.vmtd;
             if (exeParams.vmtds) options.detailScale = Number(exeParams.vmtds);
-            if (exeParams.vmtsi || Object.hasOwn(exeParams, "vmtsi")) options.selfIllumination = true;
+            if (Object.hasOwn(exeParams, "vmtsi")) options.selfIllumination = true;
             if (exeParams.vmtsim) options.selfIlluminationMask = exeParams.vmtsim;
             GarryMPN.vmtMake(exeParams.vmt, exeParams.vmto, options);
         }
-        // lua optionally luar, luapm, luapmn, luaph, luaphs, luaphb, luaphm
+        // lua optionally luar, luapm, luapmn, luaph, luaphs, luaphb, luaphm,
+        // luanf, luanh, luanfn, luanhn, luanfm, luanhm, luanfc, luanhc, luanfh, luanhh, luanfa, luanha, luanfct, luanhct, luanfao, luanhao
         if (param === "lua") {
             const options = {};
             if (exeParams.luar) options.rawLines = JSON.parse(exeParams.luar);
@@ -70,6 +71,22 @@ for (let i = 0; i < exeArgv.length; i++) {
             if (exeParams.luaphs) options.playerHandsSkin = Number(exeParams.luaphs);
             if (exeParams.luaphb) options.playerHandsBodygroups = exeParams.luaphb;
             if (exeParams.luaphm) options.playerHandsMatchBodySkin = String(exeParams.luaphm) === "true";
+            if (exeParams.luanf) options.npcFriendly = exeParams.luanf;
+            if (exeParams.luanfn) options.npcFriendlyName = exeParams.luanfn;
+            if (exeParams.luanfm) options.npcFriendlyModel = exeParams.luanfm;
+            if (exeParams.luanfc) options.npcFriendlyClass = exeParams.luanfc;
+            if (exeParams.luanfh) options.npcFriendlyHealth = Number(exeParams.luanfh);
+            if (exeParams.luanfa) options.npcFriendlyAuthor = exeParams.luanfa;
+            if (exeParams.luanfct) options.npcFriendlyCategory = exeParams.luanfct;
+            if (Object.hasOwn(exeParams, "luanfao")) options.npcFriendlyAdminOnly = true;
+            if (exeParams.luanh) options.npcHostile = exeParams.luanh;
+            if (exeParams.luanhn) options.npcHostileName = exeParams.luanhn;
+            if (exeParams.luanhm) options.npcHostileModel = exeParams.luanhm;
+            if (exeParams.luanhc) options.npcHostileClass = exeParams.luanhc;
+            if (exeParams.luanhh) options.npcHostileHealth = Number(exeParams.luanhh);
+            if (exeParams.luanha) options.npcHostileAuthor = exeParams.luanha;
+            if (exeParams.luanhct) options.npcHostileCategory = exeParams.luanhct;
+            if (Object.hasOwn(exeParams, "luanhao")) options.npcHostileAdminOnly = true;
             GarryMPN.luaMake(exeParams.lua, options);
         }
         // npciconf, npciconh with npciconfout, npciconhout optionally npciconfb, npciconff, npciconfr, npciconhb, npciconhf, npciconhr
@@ -78,7 +95,7 @@ for (let i = 0; i < exeArgv.length; i++) {
             const options = {};
             if (exeParams.npciconfb) options.backPath = exeParams.npciconfb;
             if (exeParams.npciconff) options.frontPath = exeParams.npciconff;
-            if (exeParams.npciconfr || Object.hasOwn(exeParams, "npciconfr")) options.resizeBase = true;
+            if (Object.hasOwn(exeParams, "npciconfr")) options.resizeBase = true;
             await GarryMPN.npcIcon(exeParams.npciconf, exeParams.npciconfout, options);
         }
         if (param === "npciconh") {
@@ -86,7 +103,7 @@ for (let i = 0; i < exeArgv.length; i++) {
             const options = {};
             if (exeParams.npciconhb) options.backPath = exeParams.npciconhb;
             if (exeParams.npciconhf) options.frontPath = exeParams.npciconhf;
-            if (exeParams.npciconhr || Object.hasOwn(exeParams, "npciconhr")) options.resizeBase = true;
+            if (Object.hasOwn(exeParams, "npciconhr")) options.resizeBase = true;
             await GarryMPN.npcIcon(exeParams.npciconh, exeParams.npciconhout, options);
         }
     }
