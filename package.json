@@ -10,16 +10,22 @@
         "clibuild": "node build-cli"
     },
     "dependencies": {
-        "canvas": "^3.1.2",
-        "pkg": "^5.8.1"
+        "canvas": "^3.1.2"
     },
     "pkg": {
-        "scripts": ["cli/index.js"],
+        "scripts": [
+            "cli/index.js"
+        ],
         "assets": [
             "node_modules/canvas/build/Release/canvas.node",
             "node_modules/canvas/build/**/*"
         ],
-        "targets": ["node18-win-x64"],
+        "targets": [
+            "node18-win-x64"
+        ],
         "outputPath": "./build"
+    },
+    "devDependencies": {
+        "pkg": "^5.8.1"
     }
 }
