@@ -7,6 +7,7 @@
         "output": "build"
     },
     "win": {
+        "artifactName": "garrympn_${os}_${arch}.${ext}",
         "target": ["zip", "nsis", "msi"]
     },
     "mac": {
@@ -14,10 +15,10 @@
         "category": "public.app-category.developer-tools"
     },
     "msi": {
-        "artifactName": "garrympn_${os}_${arch}.${ext}"
+        "artifactName": "garrympn_setup_${os}_${arch}.${ext}"
     },
     "nsis": {
-        "artifactName": "garrympn_${os}_${arch}.${ext}",
+        "artifactName": "garrympn_setup_${os}_${arch}.${ext}",
         "deleteAppDataOnUninstall": true
     },
     "extraFiles": [
@@ -32,6 +33,10 @@
         {
             "from": "README.gui.md",
             "to": "README.txt"
+        },
+        {
+            "from": "README.gui.md",
+            "to": "README.md"
         }
     ],
     "files": [

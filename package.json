@@ -10,7 +10,8 @@
         "gui": "electron gui/index.js",
         "gui:dev": "nodemon gui/index.js",
         "gui:build": "electron-builder build --config electron-builder.json",
-        "cli:build": "node build-cli"
+        "cli:build": "node build-cli",
+        "build": "node build-all"
     },
     "dependencies": {
         "canvas": "^3.1.2"

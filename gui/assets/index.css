@@ -22,6 +22,7 @@ html, body, main, input, button, form, textarea {
 
 /* default elements */
 button {
+    color: white;
     filter: brightness(1);
     transition: 0.2s;
     transition-property: filter;

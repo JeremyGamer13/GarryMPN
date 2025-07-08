@@ -1,6 +1,8 @@
 const fs = require("fs");
 const path = require("path");
+const util = require("util");
 const electron = require('electron');
+const childProcess = require("child_process");
 
 // NOTE: MacOS & Linux support is intended but not tested
 const devMode = !electron.app.isPackaged;
@@ -78,19 +80,33 @@ const createProtocols = () => {
     });
 };
 const createIpcHandlers = () => {
-    electron.ipcMain.handle("garrympn-invoke-cli", (_, argsObj) => {
-        // TODO: Invoke the CLI with argsObj, key:value pairs handled like "-key value"
-        /*
-            TODO: We should validate paths passed to the CLI, basically
-            the UI can tell the main process to open a file picker and
-            we add the result of that to a whitelist of paths.
-        */
-        console.log(argsObj);
-        electron.dialog.showMessageBox(electron.BrowserWindow.getFocusedWindow(), {
-            message: path.join(__dirname, "garrympn-cli.exe")
-        });
-        console.log(path.join(__dirname, "garrympn-cli.exe"));
-        return "wow the cli really said this";
+    // the non-dev mode path is next to the exe since its in extraFiles in ../electron-builder.json
+    const cliPath = devMode
+        ? path.join(__dirname, '../build/garrympn-cli.exe')
+        : path.join(path.dirname(process.execPath), 'garrympn-cli.exe');
+    const execFile = util.promisify(childProcess.execFile);
+
+    // NOTE: Act like every handler can receive custom user input from literally anyone in the world, that's basically the security here
+    electron.ipcMain.handle("garrympn-invoke-cli", async (_, argsObj) => {
+        const cliArgs = [];
+        for (const key in argsObj) {
+            const value = argsObj[key];
+            /*
+                TODO: We should validate paths passed to the CLI, basically
+                the UI can tell the main process to open a file picker and
+                we add the result of that to a whitelist of paths.
+            */
+            cliArgs.push(`--${key}`);
+            cliArgs.push(value);
+        }
+
+        const {stdout, stderr} = await execFile(cliPath, cliArgs);
+        const properStdout = stdout.replace(/\r/g, "").trim();
+        const properStderr = stderr.replace(/\r/g, "").trim();
+        return {
+            output: properStdout,
+            warning: properStderr ? properStderr : null, // "" === false
+        };
     });
 };
 
