@@ -8,6 +8,7 @@
     "main": "index.js",
     "scripts": {
         "gui": "electron gui/index.js",
+        "gui:dev": "nodemon",
         "clibuild": "node build-cli"
     },
     "dependencies": {
@@ -28,6 +29,7 @@
     },
     "devDependencies": {
         "electron": "^37.2.0",
+        "nodemon": "^3.1.10",
         "pkg": "^5.8.1"
     }
 }
