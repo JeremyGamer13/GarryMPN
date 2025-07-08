@@ -20,7 +20,7 @@ const createWindow = () => {
     });
     
     if (devMode) {
-        win.webContents.openDevTools();
+        // win.webContents.openDevTools();
     } else {
         win.removeMenu();
     }

@@ -68,6 +68,43 @@
                         </p>
                         <textarea id="inner-addon-warning" disabled style="display:none"></textarea>
                         <button id="inner-addon-warning-copy" style="display:none">Copy</button>
+
+                        <!-- inputs -->
+                        <p class="style-small">Refer to the MANUAL for instructions if you are lost.</p>
+                        <label class="inner-addon-file-picker">
+                            <span>Output Folder:</span>
+                            <button id="inner-addon-browse-folder-output">Browse</button>
+                            <input id="inner-addon-folder-output" type="text" placeholder="Folder to fill with addon">
+                        </label>
+                        <br>
+                        <label class="inner-addon-file-picker">
+                            <span>"models" Folder:</span>
+                            <button id="inner-addon-browse-folder-models">Browse</button>
+                            <input id="inner-addon-folder-models" type="text" placeholder="Models folder with subfolders until .mdl file">
+                        </label>
+                        <div id="inner-addon-model-list">
+                            <!-- lists all of the mdl files, with options on them -->
+                        </div>
+                        <label class="inner-addon-file-picker">
+                            <span>"materials" Folder:</span>
+                            <button id="inner-addon-browse-folder-materials">Browse</button>
+                            <input id="inner-addon-folder-materials" type="text" placeholder="Materials folder with subfolders until .vtf files">
+                        </label>
+                        <label>
+                            <input id="inner-addon-make-vmts" type="checkbox">
+                            <span>Make VMT files for my VTF textures</span>
+                        </label>
+                        <div id="inner-addon-vtf-vmt-list">
+                            <!-- lists all of the vtf files, with options on them for vmt gen -->
+                        </div>
+
+                        <!-- quick actions -->
+                        <br><br>
+                        <button id="inner-addon-quick-generate">Generate</button>
+                        <button id="inner-addon-quick-locate" style="background:rgb(0, 150, 45)">Locate Output in Explorer</button>
+                        <button id="inner-addon-quick-clone">Clone to Garry's Mod</button>
+                        <br><br>
+                        <button id="inner-addon-quick-delete" style="background:#f44">Delete Output Folder</button>
                     </div>
                 </div>
             </div>

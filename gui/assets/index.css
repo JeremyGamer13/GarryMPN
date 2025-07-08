@@ -21,6 +21,16 @@ html, body, main, input, button, form, textarea {
 }
 
 /* default elements */
+img {
+    user-select: none;
+}
+input[type="checkbox"], input[type="radio"] {
+    width: 1.2em;
+    height: 1.2em;
+    transform: translateY(2px);
+
+    cursor: pointer;
+}
 button {
     color: white;
     filter: brightness(1);
@@ -29,6 +39,7 @@ button {
     overflow: hidden;
 
     cursor: pointer;
+    user-select: none;
 }
 button:active img {
     transform: translateY(1px);
