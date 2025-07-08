@@ -37,6 +37,58 @@
     addonWarningCopy.onclick = () => {
         navigator.clipboard.writeText(addonWarningBox.value);
     };
+
+    // paths
+    const inputFolderOutput = document.getElementById("inner-addon-folder-output");
+    const inputFolderModels = document.getElementById("inner-addon-folder-models");
+    const inputFolderMaterials = document.getElementById("inner-addon-folder-materials");
+    for (const input of [inputFolderOutput, inputFolderModels, inputFolderMaterials]) {
+        const browseButton = document.getElementById(`${input.id}-browse`);
+        if (!browseButton) continue;
+        browseButton.onclick = async () => {
+            const chosenPath = await GarryMPN.showOpenDialog(input.placeholder);
+            if (!chosenPath) return;
+            input.value = chosenPath;
+        };
+    }
+
+    // buttons
+    const buttonQuickGenerate = document.getElementById("inner-addon-quick-generate");
+    const buttonQuickLocate = document.getElementById("inner-addon-quick-locate");
+    const buttonQuickClone = document.getElementById("inner-addon-quick-clone");
+    const buttonQuickGuess = document.getElementById("inner-addon-quick-guess");
+    const buttonQuickDelete = document.getElementById("inner-addon-quick-delete");
+    buttonQuickGenerate.onclick = async () => {
+        if (appBlur.dataset.enabled === "true") return;
+        // TODO: this
+    };
+    buttonQuickLocate.onclick = async () => {
+        if (appBlur.dataset.enabled === "true") return;
+        await GarryMPN.locatePath(inputFolderOutput.value);
+    };
+    buttonQuickClone.onclick = async () => {
+        if (appBlur.dataset.enabled === "true") return;
+        // TODO: There needs to be a settings menu with an option to choose the GMod installation, then we can cpf and cpt in the addons folder there
+    };
+    buttonQuickGuess.onclick = async () => {
+        if (appBlur.dataset.enabled === "true") return;
+        // TODO: Should have settings for default ID prefixes, then make this use model names & stuff for ids.
+    };
+    buttonQuickDelete.onclick = async () => {
+        if (appBlur.dataset.enabled === "true") return;
+        const willDelete = await GarryMPN.question("Are you sure you want to delete the output addon?", "Delete Output Folder", "Yes", "No");
+        if (!willDelete) return;
+        try {
+            await addonInfoBusy("garrympn-delete-addon", "Deleting output addon, please wait...", async () => {
+                const { warning } = await GarryMPN.invokeCli({ deladdon: inputFolderOutput.value });
+                if (warning) addonWarning(false, warning);
+            }, "Output addon has been deleted.");
+        } catch (err) {
+            // its likely that the folder just isnt an addon
+            addonWarning(false, err);
+            addonInfoText.innerText = "Failed to delete the output folder (is it actually a GMod addon?)";
+        }
+    };
     
     let loadedAddonBuilderBefore = false;
     const loadAddonBuilderFirstTime = async () => {

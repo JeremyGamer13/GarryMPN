@@ -87,15 +87,37 @@ const createIpcHandlers = () => {
     const execFile = util.promisify(childProcess.execFile);
 
     // NOTE: Act like every handler can receive custom user input from literally anyone in the world, that's basically the security here
+    electron.ipcMain.handle("garrympn-prompt-question", async (_, options) => {
+        const question = await electron.dialog.showMessageBox({
+            type: "question",
+            title: options.title,
+            message: options.message,
+            detail: options.detail,
+            buttons: options.buttons,
+        });
+        return question.response;
+    });
+    electron.ipcMain.handle("garrympn-picker-folder", async (_, title) => {
+        const { canceled, filePaths } = await electron.dialog.showOpenDialog({
+            title,
+            properties: ["openDirectory", "createDirectory", "promptToCreate"]
+        });
+        if (canceled) return false;
+
+        // make the folder if it doesnt exist
+        const folderPath = filePaths[0];
+        if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath, { recursive: true });
+        return folderPath ? folderPath : false;
+    });
+    electron.ipcMain.handle("garrympn-locate", async (_, path) => {
+        if (fs.existsSync(path)) {
+            return electron.shell.showItemInFolder(path);
+        }
+    });
     electron.ipcMain.handle("garrympn-invoke-cli", async (_, argsObj) => {
         const cliArgs = [];
         for (const key in argsObj) {
             const value = argsObj[key];
-            /*
-                TODO: We should validate paths passed to the CLI, basically
-                the UI can tell the main process to open a file picker and
-                we add the result of that to a whitelist of paths.
-            */
             cliArgs.push(`--${key}`);
             cliArgs.push(value);
         }
