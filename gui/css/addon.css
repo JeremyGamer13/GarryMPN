@@ -11,7 +11,8 @@
     user-select: none;
 }
 
-.inner-addon-file-picker {
+.inner-addon-file-picker,
+#inner-addon-model-list > div label {
     width: 100%;
 
     display: flex;
@@ -19,7 +20,10 @@
 
     gap: 4px;
 }
-.inner-addon-file-picker input[type="text"] {
+.inner-addon-file-picker input[type="text"],
+.inner-addon-file-picker input[type="number"],
+#inner-addon-model-list > div label input[type="text"],
+#inner-addon-model-list > div label input[type="number"] {
     min-width: 0;
     padding: 3px 0;
     margin-right: 4px;
@@ -32,4 +36,33 @@
     min-height: 24px;
     
     resize: vertical;
+}
+
+#inner-addon-model-list {
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    gap: 4px;
+}
+#inner-addon-model-list > div {
+    width: 100%;
+    height: fit-content;
+    max-width: 420px;
+    padding: 0 4px;
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    line-break: anywhere;
+}
+#inner-addon-model-list h1,
+#inner-addon-model-list h2,
+#inner-addon-model-list h3,
+#inner-addon-model-list h4,
+#inner-addon-model-list h5,
+#inner-addon-model-list h6,
+#inner-addon-model-list p {
+    margin-block: 4px;
 }

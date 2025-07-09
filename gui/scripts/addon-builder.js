@@ -74,8 +74,8 @@
         const options = {
             ignored: false,
             modelName: nameNoExt,
-            author: "",
-            authorAdded: true,
+            modelAuthor: "",
+            modelAuthorAdded: true,
             makePlayerModel: true,
             makeNpcFriendly: true,
             makeNpcHostile: true,
@@ -91,12 +91,14 @@
             npcFriendlyClass: "npc_citizen",
             npcFriendlyHealth: 100,
             npcFriendlyCategory: "Other",
+            npcFriendlyIconPath: "",
             npcFriendlyAdminOnly: false,
             npcHostileId: `npc_${nameNoExt.toLowerCase()}_hostile`,
             npcHostileName: `${nameNoExt} (Hostile)`,
             npcHostileClass: "npc_combine",
             npcHostileHealth: 100,
             npcHostileCategory: "Other",
+            npcHostileIconPath: "",
             npcHostileAdminOnly: false,
         };
         return options;
@@ -105,10 +107,102 @@
         const fileName = await path.basename(filePath);
 
         const model = document.createElement("div");
-        const modelTitle = document.createElement("p");
+        const modelTitle = document.createElement("h3");
         modelTitle.innerText = fileName;
 
+        // make sections
+        const sectionModel = document.createElement("div");
+        const sectionPlayer = document.createElement("div");
+
+        // make inputs
+        const labelIgnored = document.createElement("label");
+        const ignored = document.createElement("input");
+        ignored.type = "checkbox";
+        ignored.onblur = () => { options.ignored = ignored.checked; updated(); };
+        ignored.onchange = () => { options.ignored = ignored.checked; updated(); };
+        ignored.checked = options.ignored;
+        labelIgnored.appendChild(ignored);
+        labelIgnored.appendChild(document.createTextNode("Don't process model?"));
+        const labelModelName = document.createElement("label");
+        const modelName = document.createElement("input");
+        labelModelName.innerText = "Name:";
+        modelName.type = "text";
+        modelName.onblur = () => { options.modelName = modelName.value; updated(); };
+        modelName.oninput = () => { options.modelName = modelName.value; updated(); };
+        modelName.value = options.modelName;
+        labelModelName.appendChild(modelName);
+        sectionModel.appendChild(labelModelName);
+        const labelModelAuthor = document.createElement("label");
+        const checkboxModelAuthor = document.createElement("input");
+        const modelAuthor = document.createElement("input");
+        labelModelAuthor.innerText = "Author:";
+        checkboxModelAuthor.type = "checkbox";
+        checkboxModelAuthor.onblur = () => { options.modelAuthorAdded = checkboxModelAuthor.checked; updated(); };
+        checkboxModelAuthor.onchange = () => { options.modelAuthorAdded = checkboxModelAuthor.checked; updated(); };
+        checkboxModelAuthor.checked = options.modelAuthorAdded;
+        modelAuthor.type = "text";
+        modelAuthor.onblur = () => { options.modelAuthor = modelAuthor.value; updated(); };
+        modelAuthor.oninput = () => { options.modelAuthor = modelAuthor.value; updated(); };
+        modelAuthor.value = options.modelAuthor;
+        labelModelAuthor.appendChild(checkboxModelAuthor);
+        labelModelAuthor.appendChild(modelAuthor);
+        sectionModel.appendChild(labelModelAuthor);
+        const labelMakePlayerModel = document.createElement("label");
+        const makePlayerModel = document.createElement("input");
+        makePlayerModel.type = "checkbox";
+        makePlayerModel.onblur = () => { options.makePlayerModel = makePlayerModel.checked; updated(); };
+        makePlayerModel.onchange = () => { options.makePlayerModel = makePlayerModel.checked; updated(); };
+        makePlayerModel.checked = options.makePlayerModel;
+        labelMakePlayerModel.appendChild(makePlayerModel);
+        labelMakePlayerModel.appendChild(document.createTextNode("Make Player Model?"));
+        sectionModel.appendChild(labelMakePlayerModel);
+        sectionModel.appendChild(sectionPlayer);
+        const labelHandsModel = document.createElement("label");
+        const checkboxHandsModel = document.createElement("input");
+        const handsModel = document.createElement("input");
+        labelHandsModel.innerText = "Hands:";
+        checkboxHandsModel.type = "checkbox";
+        checkboxHandsModel.onblur = () => { options.handsExist = checkboxHandsModel.checked; updated(); };
+        checkboxHandsModel.onchange = () => { options.handsExist = checkboxHandsModel.checked; updated(); };
+        checkboxHandsModel.checked = options.handsExist;
+        handsModel.type = "text";
+        handsModel.onblur = () => { options.handsModel = handsModel.value; updated(); };
+        handsModel.oninput = () => { options.handsModel = handsModel.value; updated(); };
+        handsModel.value = options.handsModel;
+        labelHandsModel.appendChild(checkboxHandsModel);
+        labelHandsModel.appendChild(handsModel);
+        sectionPlayer.appendChild(labelHandsModel);
+        const labelHandsSkin = document.createElement("label");
+        const checkboxHandsSkin = document.createElement("input");
+        const handsSkin = document.createElement("input");
+        labelHandsSkin.innerText = "Hands Skin:";
+        checkboxHandsSkin.type = "checkbox";
+        checkboxHandsSkin.onblur = () => { options.handsHasSkin = checkboxHandsSkin.checked; updated(); };
+        checkboxHandsSkin.onchange = () => { options.handsHasSkin = checkboxHandsSkin.checked; updated(); };
+        checkboxHandsSkin.checked = options.handsHasSkin;
+        handsSkin.type = "number";
+        handsSkin.onblur = () => { options.handsSkin = handsSkin.value; updated(); };
+        handsSkin.oninput = () => { options.handsSkin = handsSkin.value; updated(); };
+        handsSkin.value = options.handsSkin;
+        handsSkin.min = "0";
+        labelHandsSkin.appendChild(checkboxHandsSkin);
+        labelHandsSkin.appendChild(handsSkin);
+        sectionPlayer.appendChild(labelHandsSkin);
+
+        const updated = () => {
+            sectionModel.style.display = options.ignored ? "none" : "";
+            sectionPlayer.style.display = !options.makePlayerModel ? "none" : "";
+
+            modelAuthor.style.display = !options.modelAuthorAdded ? "none" : "";
+            handsModel.style.display = !options.handsExist ? "none" : "";
+            handsSkin.style.display = !options.handsHasSkin ? "none" : "";
+        };
+
+        // add all of the children
         model.appendChild(modelTitle);
+        model.appendChild(labelIgnored);
+        model.appendChild(sectionModel);
+        updated();
         return model;
     };
     const listMdlFromFolder = async (modelsFolder) => {
