@@ -19,7 +19,7 @@
             });
         });
     };
-    const addonWarning = (isErr, text) => {
+    const addonWarning = (isErr, doAlert, text) => {
         addonWarningBox.style.display = "";
         addonWarningBox.value = String(String(text) + "\n" + addonWarningBox.value).trim();
 
@@ -28,14 +28,17 @@
         if (!isErr) {
             addonWarningLabel.style.color = "yellow";
             addonWarningLabel.innerText = "An action left a warning, see the log below.";
+            if (doAlert) UtilAlert.showAlert("alert", "An action left a warning, see the log.");
         } else {
             addonWarningLabel.style.color = "#faa";
             addonWarningLabel.innerText = "An action left an error, see the log below."
                 + "\nMake sure you have installed GarryMPN properly and haven't deleted any of it's files or resources.";
+            if (doAlert) UtilAlert.showAlert("alert", "An action left an error, see the log.");
         }
     };
-    addonWarningCopy.onclick = () => {
-        navigator.clipboard.writeText(addonWarningBox.value);
+    addonWarningCopy.onclick = async () => {
+        await navigator.clipboard.writeText(addonWarningBox.value);
+        UtilAlert.showAlert("alert", "Copied to clipboard!");
     };
 
     // paths
@@ -81,11 +84,12 @@
         try {
             await addonInfoBusy("garrympn-delete-addon", "Deleting output addon, please wait...", async () => {
                 const { warning } = await GarryMPN.invokeCli({ deladdon: inputFolderOutput.value });
-                if (warning) addonWarning(false, warning);
+                if (warning) addonWarning(false, true, warning);
             }, "Output addon has been deleted.");
         } catch (err) {
             // its likely that the folder just isnt an addon
-            addonWarning(false, err);
+            addonWarning(false, false, err);
+            UtilAlert.showAlert("info", "Failed to delete the output folder (is it actually a GMod addon?)");
             addonInfoText.innerText = "Failed to delete the output folder (is it actually a GMod addon?)";
         }
     };
@@ -100,14 +104,14 @@
             await addonInfoBusy("garrympn-validate-cli", "Validating garrympn-cli.exe, please wait...", async () => {
                 const testMessage = "validate";
                 const { output, warning } = await GarryMPN.invokeCli({ echo: testMessage });
-                if (warning) addonWarning(false, warning);
+                if (warning) addonWarning(false, true, warning);
                 if (!output) throw new Error("CLI output no message; " + (warning || ""));
                 if (output !== testMessage) throw new Error("Test CLI message did not match; " + ([output, warning || ""]).join("\n"));
             }, "This is the Addon Builder menu. See inputs below.");
         } catch (err) {
             // we cant even use this menu in this state, so let it reload incase the bug can be fixed
             loadedAddonBuilderBefore = false;
-            addonWarning(true, err);
+            addonWarning(true, true, err);
         }
     };
 

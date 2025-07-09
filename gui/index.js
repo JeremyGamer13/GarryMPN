@@ -76,6 +76,7 @@ const createProtocols = () => {
             case "/loader-guy.png": return createResponseBuffer("assets/loader-guy.png", "image/png");
             case "/alert-info.png": return createResponseBuffer("assets/alert-info.png", "image/png");
             case "/alert-important.png": return createResponseBuffer("assets/alert-important.png", "image/png");
+            case "/alert-error.png": return createResponseBuffer("assets/alert-error.png", "image/png");
         }
 
         return new Response('Invalid', {
