@@ -10,6 +10,7 @@ electron.contextBridge.exposeInMainWorld("path", {
     relative: async (pathFrom, pathTo) => await electron.ipcRenderer.invoke("module-path-relative", [pathFrom, pathTo]),
     resolve: async (...paths) => await electron.ipcRenderer.invoke("module-path-resolve", [...paths]),
 });
+electron.contextBridge.exposeInMainWorld("slash", async (path) => await electron.ipcRenderer.invoke("module-slash", path));
 
 // this is some lua type stuff right here
 const GarryMPN = {};

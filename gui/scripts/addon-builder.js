@@ -55,7 +55,7 @@
             if (!chosenPath) return;
             input.value = chosenPath;
             // make the lists update (the functions will check if we need to reload)
-            listMdlFromFolder(chosenPath);
+            listMdlFromFolder(inputFolderModels.value);
         };
     }
     inputFolderModels.onblur = () => {
@@ -68,10 +68,16 @@
     const listMdlOption = async (modelsFolder, filePath) => {
         const fileName = await path.basename(filePath);
         const extName = await path.extname(filePath);
-        const gmodPath = await path.relative(modelsFolder, filePath);
+        const gmodPath = await path.relative(await path.join(modelsFolder, ".."), filePath);
         let nameNoExt = String(fileName.split(".").slice(0, -1).join("."));
 
         const options = {
+            coreModelsFolder: modelsFolder,
+            coreFilePath: filePath,
+            coreFileName: fileName,
+            coreFileExt: extName,
+            coreGmodPath: gmodPath,
+            coreFileNameNoExt: nameNoExt,
             ignored: false,
             modelName: nameNoExt,
             modelAuthor: "",
@@ -105,7 +111,7 @@
     };
     const listMdlItem = async (filePath, modelsFolder, options) => {
         const fileName = await path.basename(filePath);
-        const gmodPath = await path.relative(modelsFolder, filePath);
+        const gmodPath = await path.relative(await path.join(modelsFolder, ".."), filePath);
 
         const model = document.createElement("div");
         const modelTitle = document.createElement("h3");
@@ -389,14 +395,51 @@
         if (!outputFolder) throw new Error("Enter a valid output folder.");
         if (!modelsFolder) throw new Error("Enter a valid models folder.");
         if (!materialsFolder) throw new Error("Enter a valid materials folder.");
+        // prep
+        const luaFolder = await path.join(outputFolder, "lua/autorun/");
         await addonInfoBusy("garrympn-addon-build-prepare", "Preparing addon folder...", async () => {
             // make the output folder if it doesnt exist
             await GarryMPN.invokeCli({ mkdir: outputFolder });
             // copy the models folder to the output folder
             const targetModelsFolder = await path.join(outputFolder, "models/");
             await GarryMPN.invokeCli({ cpf: modelsFolder, cpt: targetModelsFolder });
+            // copy the materials folder to the output folder
+            const targetMaterialsFolder = await path.join(outputFolder, "materials/");
+            await GarryMPN.invokeCli({ cpf: materialsFolder, cpt: targetMaterialsFolder });
+            // make lua folder
+            await GarryMPN.invokeCli({ mkdir: luaFolder });
         });
-        // TODO: this
+        // make lua
+        for (const mdl of listMdlOptions) {
+            const modelId = mdl.coreFileNameNoExt;
+            const randomId = `${Math.random() * 99999999}`.replace(/\./g, "");
+            const luaName = `model_${modelId}_${randomId}.lua`;
+            const luaPath = await path.join(luaFolder, luaName);
+            await addonInfoBusy("garrympn-addon-build-lua", `Generating lua file "${luaName}"`, async () => {
+                const options = {};
+                options.lua = luaPath;
+                // user options
+                if (mdl.makePlayerModel) {
+                    options.luapm = await slash(mdl.coreGmodPath);
+                    options.luapmn = mdl.modelName;
+                    if (mdl.handsExist) {
+                        options.luaph = await slash(mdl.handsModel);
+                    }
+                    if (mdl.handsHasSkin) {
+                        options.luaphs = mdl.handsSkin;
+                    }
+                    if (mdl.handsHasBodyGroups) {
+                        options.luaphb = mdl.handsBodyGroups;
+                    }
+                    if (mdl.handsMatchBodySkin) {
+                        options.luaphm = mdl.handsMatchBodySkin;
+                    }
+                }
+                // cli
+                const { output, warning } = await GarryMPN.invokeCli(options);
+                if (warning) addonWarning(false, true, warning);
+            });
+        }
     };
 
     document.addEventListener("garrympn-tab-updated", (event) => {

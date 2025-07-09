@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const util = require("util");
 const glob = require("glob");
+const slash = require("slash");
 const electron = require('electron');
 const childProcess = require("child_process");
 
@@ -104,6 +105,7 @@ const createIpcHandlers = () => {
     electron.ipcMain.handle("module-path-normalize", async (_, [path]) => modulePath.normalize(path));
     electron.ipcMain.handle("module-path-relative", async (_, [pathFrom, pathTo]) => modulePath.relative(pathFrom, pathTo));
     electron.ipcMain.handle("module-path-resolve", async (_, [...paths]) => modulePath.resolve(...paths));
+    electron.ipcMain.handle("module-slash", async (_, path) => slash.default(path));
     // garrympn
     electron.ipcMain.handle("garrympn-prompt-question", async (_, options) => {
         const question = await electron.dialog.showMessageBox({
