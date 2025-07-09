@@ -11,7 +11,9 @@
             UtilLoader.waitInQueue(id, message, async () => {
                 try {
                     await cb();
-                    addonInfoText.innerText = doneMessage;
+                    if (doneMessage) {
+                        addonInfoText.innerText = doneMessage;
+                    }
                 } catch (err) {
                     return reject(err);
                 }
@@ -33,7 +35,7 @@
             addonWarningLabel.style.color = "#faa";
             addonWarningLabel.innerText = "An action left an error, see the log below."
                 + "\nMake sure you have installed GarryMPN properly and haven't deleted any of it's files or resources.";
-            if (doAlert) UtilAlert.showAlert("alert", "An action left an error, see the log.");
+            if (doAlert) UtilAlert.showAlert("error", "An action left an error, see the log.");
         }
     };
     addonWarningCopy.onclick = async () => {
@@ -52,8 +54,102 @@
             const chosenPath = await GarryMPN.showOpenDialog(input.placeholder);
             if (!chosenPath) return;
             input.value = chosenPath;
+            // make the lists update (the functions will check if we need to reload)
+            listMdlFromFolder(chosenPath);
         };
     }
+    inputFolderModels.onblur = () => {
+        listMdlFromFolder(inputFolderModels.value);
+    };
+
+    // mdl list
+    let listMdlTarget = ""; // which folder is loaded right now
+    const listMdlOptions = [];
+    const listMdlOption = async (modelsFolder, filePath) => {
+        const fileName = await path.basename(filePath);
+        const extName = await path.extname(filePath);
+        const gmodPath = await path.relative(modelsFolder, filePath);
+        let nameNoExt = String(fileName.split(".").slice(0, -1).join("."));
+
+        const options = {
+            ignored: false,
+            modelName: nameNoExt,
+            author: "",
+            authorAdded: true,
+            makePlayerModel: true,
+            makeNpcFriendly: true,
+            makeNpcHostile: true,
+            handsExist: false,
+            handsModel: gmodPath,
+            handsHasSkin: false,
+            handsSkin: 0,
+            handsHasBodyGroups: false,
+            handsBodyGroups: "0000000",
+            handsMatchBodySkin: false,
+            npcFriendlyId: `npc_${nameNoExt.toLowerCase()}_friendly`,
+            npcFriendlyName: `${nameNoExt} (Friendly)`,
+            npcFriendlyClass: "npc_citizen",
+            npcFriendlyHealth: 100,
+            npcFriendlyCategory: "Other",
+            npcFriendlyAdminOnly: false,
+            npcHostileId: `npc_${nameNoExt.toLowerCase()}_hostile`,
+            npcHostileName: `${nameNoExt} (Hostile)`,
+            npcHostileClass: "npc_combine",
+            npcHostileHealth: 100,
+            npcHostileCategory: "Other",
+            npcHostileAdminOnly: false,
+        };
+        return options;
+    };
+    const listMdlItem = async (filePath, options) => {
+        const fileName = await path.basename(filePath);
+
+        const model = document.createElement("div");
+        const modelTitle = document.createElement("p");
+        modelTitle.innerText = fileName;
+
+        model.appendChild(modelTitle);
+        return model;
+    };
+    const listMdlFromFolder = async (modelsFolder) => {
+        if (listMdlTarget === modelsFolder) return;
+        listMdlTarget = modelsFolder;
+        console.log("Needs to load MDL folder");
+
+        const mdlList = document.getElementById("inner-addon-model-list");
+        const mdlListDetail = document.getElementById("inner-addon-model-list-detail");
+        mdlListDetail.style.display = "none";
+        await addonInfoBusy("garrympn-addon-list-mdl", "Reading models folder...", async () => {
+            // read folder
+            const folderContents = await GarryMPN.readFolder(modelsFolder);
+            const mdlContents = folderContents.filter(file => file.endsWith(".mdl"));
+            if (mdlContents.length <= 0) {
+                mdlListDetail.style.display = "";
+                if (folderContents.some(file => file.endsWith(".qc") || file.endsWith(".smd"))) {
+                    mdlListDetail.innerText = "No MDL files found. Note that a QC or SMD file was found, make sure this folder contains a compiled MDL model.";
+                } else {
+                    mdlListDetail.innerText = "No MDL files found.";
+                }
+            }
+
+            // for each model, make the options & then elements & stuff
+            listMdlOptions.splice(0, listMdlOptions.length);
+
+            mdlList.innerHTML = "";
+            for (const model of mdlContents) {
+                // make options
+                const options = await listMdlOption(modelsFolder, model);
+                listMdlOptions.push(options);
+
+                // make element
+                const element = await listMdlItem(model, options);
+                mdlList.appendChild(element);
+            }
+
+            // done
+            UtilAlert.showAlert("alert", "Models found, adjust settings for the addon.");
+        }, "View the models list for options.");
+    }; 
 
     // buttons
     const buttonQuickGenerate = document.getElementById("inner-addon-quick-generate");
@@ -63,7 +159,15 @@
     const buttonQuickDelete = document.getElementById("inner-addon-quick-delete");
     buttonQuickGenerate.onclick = async () => {
         if (appBlur.dataset.enabled === "true") return;
-        // TODO: this
+        try {
+            await generateAddon();
+        } catch (err) {
+            addonWarning(true, true, err);
+            addonInfoText.innerText = "Failed to generate addon";
+            return;
+        }
+
+        UtilAlert.showAlert("alert", "Addon generated! Check the output folder.");
     };
     buttonQuickLocate.onclick = async () => {
         if (appBlur.dataset.enabled === "true") return;
@@ -94,6 +198,7 @@
         }
     };
     
+    // big logic
     let loadedAddonBuilderBefore = false;
     const loadAddonBuilderFirstTime = async () => {
         if (loadedAddonBuilderBefore) return;
@@ -113,6 +218,24 @@
             loadedAddonBuilderBefore = false;
             addonWarning(true, true, err);
         }
+    };
+
+    const generateAddon = async () => {
+        const outputFolder = inputFolderOutput.value;
+        const modelsFolder = inputFolderModels.value;
+        const materialsFolder = inputFolderMaterials.value;
+        // validate stuff
+        if (!outputFolder) throw new Error("Enter a valid output folder.");
+        if (!modelsFolder) throw new Error("Enter a valid models folder.");
+        if (!materialsFolder) throw new Error("Enter a valid materials folder.");
+        await addonInfoBusy("garrympn-addon-build-prepare", "Preparing addon folder...", async () => {
+            // make the output folder if it doesnt exist
+            await GarryMPN.invokeCli({ mkdir: outputFolder });
+            // copy the models folder to the output folder
+            const targetModelsFolder = await path.join(outputFolder, "models/");
+            await GarryMPN.invokeCli({ cpf: modelsFolder, cpt: targetModelsFolder });
+        });
+        // TODO: this
     };
 
     document.addEventListener("garrympn-tab-updated", (event) => {

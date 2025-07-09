@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const util = require("util");
+const glob = require("glob");
 const electron = require('electron');
 const childProcess = require("child_process");
 
@@ -93,6 +94,17 @@ const createIpcHandlers = () => {
     const execFile = util.promisify(childProcess.execFile);
 
     // NOTE: Act like every handler can receive custom user input from literally anyone in the world, that's basically the security here
+    // module-path
+    const modulePath = path;
+    electron.ipcMain.handle("module-path-basename", async (_, [path, suffix]) => modulePath.basename(path, suffix));
+    electron.ipcMain.handle("module-path-dirname", async (_, [path]) => modulePath.dirname(path));
+    electron.ipcMain.handle("module-path-extname", async (_, [path]) => modulePath.extname(path));
+    electron.ipcMain.handle("module-path-isAbsolute", async (_, [path]) => modulePath.isAbsolute(path));
+    electron.ipcMain.handle("module-path-join", async (_, [...paths]) => modulePath.join(...paths));
+    electron.ipcMain.handle("module-path-normalize", async (_, [path]) => modulePath.normalize(path));
+    electron.ipcMain.handle("module-path-relative", async (_, [pathFrom, pathTo]) => modulePath.relative(pathFrom, pathTo));
+    electron.ipcMain.handle("module-path-resolve", async (_, [...paths]) => modulePath.resolve(...paths));
+    // garrympn
     electron.ipcMain.handle("garrympn-prompt-question", async (_, options) => {
         const question = await electron.dialog.showMessageBox({
             type: "question",
@@ -119,6 +131,14 @@ const createIpcHandlers = () => {
         if (fs.existsSync(path)) {
             return electron.shell.showItemInFolder(path);
         }
+    });
+    electron.ipcMain.handle("garrympn-read-folder", async (_, path) => {
+        const files = await glob.glob(`${path}/**/*`, {
+            nodir: false,
+            absolute: true,
+            dot: true,
+        });
+        return files;
     });
     electron.ipcMain.handle("garrympn-invoke-cli", async (_, argsObj) => {
         const cliArgs = [];
