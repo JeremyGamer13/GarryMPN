@@ -103,12 +103,17 @@
         };
         return options;
     };
-    const listMdlItem = async (filePath, options) => {
+    const listMdlItem = async (filePath, modelsFolder, options) => {
         const fileName = await path.basename(filePath);
+        const gmodPath = await path.relative(modelsFolder, filePath);
 
         const model = document.createElement("div");
         const modelTitle = document.createElement("h3");
+        const modelPath = document.createElement("p");
         modelTitle.innerText = fileName;
+        modelPath.classList.add("style-small");
+        modelPath.classList.add("style-far");
+        modelPath.innerText = gmodPath;
 
         // make sections
         const sectionModel = document.createElement("div");
@@ -188,18 +193,51 @@
         labelHandsSkin.appendChild(checkboxHandsSkin);
         labelHandsSkin.appendChild(handsSkin);
         sectionPlayer.appendChild(labelHandsSkin);
+        const labelHandsBodyGroups = document.createElement("label");
+        const checkboxHandsBodyGroups = document.createElement("input");
+        const handsBodyGroups = document.createElement("input");
+        labelHandsBodyGroups.innerText = "Hands Body Groups:";
+        checkboxHandsBodyGroups.type = "checkbox";
+        checkboxHandsBodyGroups.onblur = () => { options.handsHasBodyGroups = checkboxHandsBodyGroups.checked; updated(); };
+        checkboxHandsBodyGroups.onchange = () => { options.handsHasBodyGroups = checkboxHandsBodyGroups.checked; updated(); };
+        checkboxHandsBodyGroups.checked = options.handsHasBodyGroups;
+        handsBodyGroups.type = "text";
+        handsBodyGroups.onblur = () => { options.handsBodyGroups = handsBodyGroups.value; updated(); };
+        handsBodyGroups.oninput = () => { options.handsBodyGroups = handsBodyGroups.value; updated(); };
+        handsBodyGroups.value = options.handsBodyGroups;
+        labelHandsBodyGroups.appendChild(checkboxHandsBodyGroups);
+        labelHandsBodyGroups.appendChild(handsBodyGroups);
+        sectionPlayer.appendChild(labelHandsBodyGroups);
+        const labelhandsMatchBodySkin = document.createElement("label");
+        const handsMatchBodySkin = document.createElement("input");
+        handsMatchBodySkin.type = "checkbox";
+        handsMatchBodySkin.onblur = () => { options.handsMatchBodySkin = handsMatchBodySkin.checked; updated(); };
+        handsMatchBodySkin.onchange = () => { options.handsMatchBodySkin = handsMatchBodySkin.checked; updated(); };
+        handsMatchBodySkin.checked = options.handsMatchBodySkin;
+        labelhandsMatchBodySkin.appendChild(handsMatchBodySkin);
+        labelhandsMatchBodySkin.appendChild(document.createTextNode("Hands Match Body Skin?"));
+        sectionPlayer.appendChild(labelhandsMatchBodySkin);
 
         const updated = () => {
+            // sections
             sectionModel.style.display = options.ignored ? "none" : "";
             sectionPlayer.style.display = !options.makePlayerModel ? "none" : "";
 
+            // hide input sections (labels)
+            labelHandsSkin.style.display = !options.handsExist ? "none" : "";
+            labelHandsBodyGroups.style.display = !options.handsExist ? "none" : "";
+            labelhandsMatchBodySkin.style.display = !options.handsExist ? "none" : "";
+
+            // hide inputs
             modelAuthor.style.display = !options.modelAuthorAdded ? "none" : "";
             handsModel.style.display = !options.handsExist ? "none" : "";
             handsSkin.style.display = !options.handsHasSkin ? "none" : "";
+            handsBodyGroups.style.display = !options.handsHasBodyGroups ? "none" : "";
         };
 
         // add all of the children
         model.appendChild(modelTitle);
+        model.appendChild(modelPath);
         model.appendChild(labelIgnored);
         model.appendChild(sectionModel);
         updated();
@@ -236,7 +274,7 @@
                 listMdlOptions.push(options);
 
                 // make element
-                const element = await listMdlItem(model, options);
+                const element = await listMdlItem(model, modelsFolder, options);
                 mdlList.appendChild(element);
             }
 
