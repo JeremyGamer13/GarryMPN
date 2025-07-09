@@ -1,6 +1,12 @@
 # GarryMPN
 Make simple Player Model & NPC Garry's Mod addon structures with an MDL model and VTF textures.
 
+# Notice
+This program is not complete yet.
+As of now the GUI only generates proper addons if you have a materials folder with VMT files already inside, and NPCs cannot be made or configured yet.
+
+When there is a proper v1.0.0 release out, this notice will disappear.
+
 # Possible Errors
 If you do not find your error here, try reinstalling the program.
 If you still get the error on a fresh install, please [report it to the GitHub repository](https://github.com/JeremyGamer13/GarryMPN/issues).
