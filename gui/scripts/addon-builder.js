@@ -118,8 +118,11 @@
         // make sections
         const sectionModel = document.createElement("div");
         const sectionPlayer = document.createElement("div");
+        const sectionNpcFriendly = document.createElement("div");
+        const sectionNpcHostile = document.createElement("div");
 
         // make inputs
+        // default & model section
         const labelIgnored = document.createElement("label");
         const ignored = document.createElement("input");
         ignored.type = "checkbox";
@@ -161,7 +164,29 @@
         labelMakePlayerModel.appendChild(makePlayerModel);
         labelMakePlayerModel.appendChild(document.createTextNode("Make Player Model?"));
         sectionModel.appendChild(labelMakePlayerModel);
+        const labelMakeNpcFriendly = document.createElement("label");
+        const makeNpcFriendly = document.createElement("input");
+        makeNpcFriendly.type = "checkbox";
+        makeNpcFriendly.onblur = () => { options.makeNpcFriendly = makeNpcFriendly.checked; updated(); };
+        makeNpcFriendly.onchange = () => { options.makeNpcFriendly = makeNpcFriendly.checked; updated(); };
+        makeNpcFriendly.checked = options.makeNpcFriendly;
+        labelMakeNpcFriendly.appendChild(makeNpcFriendly);
+        labelMakeNpcFriendly.appendChild(document.createTextNode("Make Friendly NPC?"));
+        sectionModel.appendChild(labelMakeNpcFriendly);
+        const labelMakeNpcHostile = document.createElement("label");
+        const makeNpcHostile = document.createElement("input");
+        makeNpcHostile.type = "checkbox";
+        makeNpcHostile.onblur = () => { options.makeNpcHostile = makeNpcHostile.checked; updated(); };
+        makeNpcHostile.onchange = () => { options.makeNpcHostile = makeNpcHostile.checked; updated(); };
+        makeNpcHostile.checked = options.makeNpcHostile;
+        labelMakeNpcHostile.appendChild(makeNpcHostile);
+        labelMakeNpcHostile.appendChild(document.createTextNode("Make Hostile NPC?"));
+        sectionModel.appendChild(labelMakeNpcHostile);
+        // other sections
         sectionModel.appendChild(sectionPlayer);
+        sectionModel.appendChild(sectionNpcFriendly);
+        sectionModel.appendChild(sectionNpcHostile);
+        // playermodel
         const labelHandsModel = document.createElement("label");
         const checkboxHandsModel = document.createElement("input");
         const handsModel = document.createElement("input");
@@ -217,11 +242,15 @@
         labelhandsMatchBodySkin.appendChild(handsMatchBodySkin);
         labelhandsMatchBodySkin.appendChild(document.createTextNode("Hands Match Body Skin?"));
         sectionPlayer.appendChild(labelhandsMatchBodySkin);
+        // npc friendly
+        // npc hostile
 
         const updated = () => {
             // sections
             sectionModel.style.display = options.ignored ? "none" : "";
             sectionPlayer.style.display = !options.makePlayerModel ? "none" : "";
+            sectionNpcFriendly.style.display = !options.makeNpcFriendly ? "none" : "";
+            sectionNpcHostile.style.display = !options.makeNpcHostile ? "none" : "";
 
             // hide input sections (labels)
             labelHandsSkin.style.display = !options.handsExist ? "none" : "";
