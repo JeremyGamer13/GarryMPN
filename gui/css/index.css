@@ -1,0 +1,82 @@
+/* everything */
+html, body, main {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+main {
+    height: calc(100% - 4em);
+    margin-top: 4em;
+
+    background: #111;
+    color: white;
+    overflow: auto;
+}
+html, body, main, input, button, form, textarea {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+/* default elements */
+img {
+    user-select: none;
+}
+input[type="checkbox"], input[type="radio"] {
+    width: 1.2em;
+    height: 1.2em;
+    transform: translateY(2px);
+
+    cursor: pointer;
+}
+button {
+    color: white;
+    filter: brightness(1);
+    transition: 0.2s;
+    transition-property: filter;
+    overflow: hidden;
+
+    cursor: pointer;
+    user-select: none;
+}
+button:active img {
+    transform: translateY(1px);
+}
+button:hover {
+    filter: brightness(1.1);
+    transition: 0.2s;
+    transition-property: filter;
+}
+button::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10em;
+    height: 10em;
+    
+    content: '';
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    aspect-ratio: 1 / 1;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.1s ease;
+
+    z-index: 0;
+}
+button:hover::before {
+    transform: translate(-50%, -50%) scale(0.5);
+}
+button:active::before {
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.2s ease;
+}
+
+/* simple styles */
+.style-small {
+    font-size: 12px;
+}
+.style-far {
+    opacity: 0.5;
+}

@@ -1,0 +1,79 @@
+#app-navbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 4em;
+    
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    background: #0082FF;
+    color: white;
+    overflow: hidden;
+
+    user-select: none;
+    z-index: 9999;
+}
+.app-navbar-margin {
+    width: 100%;
+    height: 4em;
+}
+
+#app-navbar > button {
+    height: calc(100% - 8px);
+    margin: 4px 0;
+    margin-right: 4px;
+
+    background: transparent;
+    color: white;
+    outline: 0;
+    border: 0;
+}
+#app-navbar > button img {
+    height: 100%;
+
+    user-select: none;
+}
+
+#app-content {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+}
+#app-sidebar {
+    width: 256px;
+    height: calc(100% - 48px);
+    padding: 24px 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+#app-sidebar button {
+    width: calc(100% - 16px);
+    height: 32px;
+    margin-bottom: 8px;
+
+    border: 1px solid rgb(34, 34, 34);
+    background: rgb(77, 77, 77);
+    color: white;
+    border-radius: 4px;
+    transition: filter 0s;
+}
+#app-sidebar button:active {
+    filter: brightness(0.75);
+    transition: filter 0s;
+}
+#app-tab {
+    width: calc(100% - 256px);
+    height: 100%;
+
+    overflow: auto;
+}

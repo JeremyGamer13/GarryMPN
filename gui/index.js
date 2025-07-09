@@ -44,17 +44,20 @@ const createProtocols = () => {
             }
             case "js": {
                 switch (url.pathname) {
-                    case "/": return createResponseText("mainpage.js", "text/javascript");
-                    case "/addon-builder": return createResponseText("addon-builder.js", "text/javascript");
-                    case "/util-loader": return createResponseText("util-loader.js", "text/javascript");
+                    case "/": return createResponseText("scripts/mainpage.js", "text/javascript");
+                    case "/addon-builder": return createResponseText("scripts/addon-builder.js", "text/javascript");
+                    case "/util-loader": return createResponseText("scripts/util-loader.js", "text/javascript");
+                    case "/util-alert": return createResponseText("scripts/util-alert.js", "text/javascript");
                 }
                 break;
             }
             case "css": {
                 switch (url.pathname) {
-                    case "/": return createResponseText("assets/index.css", "text/css");
-                    case "/home": return createResponseText("assets/home.css", "text/css");
-                    case "/addon": return createResponseText("assets/addon.css", "text/css");
+                    case "/": return createResponseText("css/index.css", "text/css");
+                    case "/app": return createResponseText("css/app.css", "text/css");
+                    case "/prompt": return createResponseText("css/prompt.css", "text/css");
+                    case "/home": return createResponseText("css/home.css", "text/css");
+                    case "/addon": return createResponseText("css/addon.css", "text/css");
                 }
                 break;
             }
@@ -71,6 +74,8 @@ const createProtocols = () => {
             case "/icon.png": return createResponseBuffer("icon.png", "image/png");
             case "/loader.png": return createResponseBuffer("assets/loader.png", "image/png");
             case "/loader-guy.png": return createResponseBuffer("assets/loader-guy.png", "image/png");
+            case "/alert-info.png": return createResponseBuffer("assets/alert-info.png", "image/png");
+            case "/alert-important.png": return createResponseBuffer("assets/alert-important.png", "image/png");
         }
 
         return new Response('Invalid', {
