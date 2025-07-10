@@ -2,6 +2,8 @@
 [x] add waiting for a path to exist with specified timeout
 [x] add basic vmt gen
 [x] add lua gen
+[ ] add gui icon gen
+[ ] add gui vmt gen
 [ ] add gui
 
 # For later
