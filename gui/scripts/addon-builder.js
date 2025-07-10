@@ -565,7 +565,9 @@
                     if (mdl.npcFriendlyAdvanced) {
                         options.luanfc = mdl.npcFriendlyClass;
                         options.luanfh = mdl.npcFriendlyHealth;
-                        options.luanfao = mdl.npcFriendlyAdminOnly;
+                        if (mdl.npcFriendlyAdminOnly) {
+                            options.luanfao = true;
+                        }
                     }
                 }
                 // npc hostile
@@ -580,8 +582,9 @@
                     if (mdl.npcHostileAdvanced) {
                         options.luanhc = mdl.npcHostileClass;
                         options.luanhh = mdl.npcHostileHealth;
-                        options.luanhct = mdl.npcHostileCategory;
-                        options.luanhao = mdl.npcHostileAdminOnly;
+                        if (mdl.npcHostileAdminOnly) {
+                            options.luanhao = true;
+                        }
                     }
                 }
                 // cli
