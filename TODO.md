@@ -7,6 +7,7 @@
 [ ] add gui
 
 # For later
+[ ] add phong to vmt gen
 [ ] allow vmt gen to add everything source supports for materials
 [ ] actually verify vmt gen can do everything it supports
 [ ] convert images to vtf automatically
