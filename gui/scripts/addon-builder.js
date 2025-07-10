@@ -285,8 +285,8 @@
         npcFriendlyIconPath.type = "text";
         npcFriendlyIconPath.onblur = () => { options.npcFriendlyIconPath = npcFriendlyIconPath.value; updated(); };
         npcFriendlyIconPath.oninput = () => { options.npcFriendlyIconPath = npcFriendlyIconPath.value; updated(); };
-        npcFriendlyIconPath.placeholder = "NPC Icon PNG path";
         npcFriendlyIconPath.value = options.npcFriendlyIconPath;
+        npcFriendlyIconPath.placeholder = "NPC Icon PNG path";
         labelNpcFriendlyIconPath.appendChild(checkboxNpcFriendlyIconPath);
         labelNpcFriendlyIconPath.appendChild(browseNpcFriendlyIconPath);
         labelNpcFriendlyIconPath.appendChild(npcFriendlyIconPath);
@@ -330,6 +330,34 @@
         labelNpcFriendlyAdvanced.appendChild(npcFriendlyAdvanced);
         labelNpcFriendlyAdvanced.appendChild(document.createTextNode("Friendly NPC: Advanced Customization?"));
         sectionNpcFriendly.appendChild(labelNpcFriendlyAdvanced);
+        const labelNpcFriendlyClass = document.createElement("label");
+        const npcFriendlyClass = document.createElement("input");
+        labelNpcFriendlyClass.innerText = "Friendly NPC Class:";
+        npcFriendlyClass.type = "text";
+        npcFriendlyClass.onblur = () => { options.npcFriendlyClass = npcFriendlyClass.value; updated(); };
+        npcFriendlyClass.oninput = () => { options.npcFriendlyClass = npcFriendlyClass.value; updated(); };
+        npcFriendlyClass.value = options.npcFriendlyClass;
+        labelNpcFriendlyClass.appendChild(npcFriendlyClass);
+        sectionNpcFriendly.appendChild(labelNpcFriendlyClass);
+        const labelNpcFriendlyHealth = document.createElement("label");
+        const npcFriendlyHealth = document.createElement("input");
+        labelNpcFriendlyHealth.innerText = "Friendly NPC Health:";
+        npcFriendlyHealth.type = "number";
+        npcFriendlyHealth.onblur = () => { options.npcFriendlyHealth = npcFriendlyHealth.value; updated(); };
+        npcFriendlyHealth.oninput = () => { options.npcFriendlyHealth = npcFriendlyHealth.value; updated(); };
+        npcFriendlyHealth.value = options.npcFriendlyHealth;
+        npcFriendlyHealth.min = "0";
+        labelNpcFriendlyHealth.appendChild(npcFriendlyHealth);
+        sectionNpcFriendly.appendChild(labelNpcFriendlyHealth);
+        const labelNpcFriendlyAdminOnly = document.createElement("label");
+        const npcFriendlyAdminOnly = document.createElement("input");
+        npcFriendlyAdminOnly.type = "checkbox";
+        npcFriendlyAdminOnly.onblur = () => { options.npcFriendlyAdminOnly = npcFriendlyAdminOnly.checked; updated(); };
+        npcFriendlyAdminOnly.onchange = () => { options.npcFriendlyAdminOnly = npcFriendlyAdminOnly.checked; updated(); };
+        npcFriendlyAdminOnly.checked = options.npcFriendlyAdminOnly;
+        labelNpcFriendlyAdminOnly.appendChild(npcFriendlyAdminOnly);
+        labelNpcFriendlyAdminOnly.appendChild(document.createTextNode("Friendly NPC is Admin Only?"));
+        sectionNpcFriendly.appendChild(labelNpcFriendlyAdminOnly);
         // npc hostile
 
         const updated = () => {
@@ -343,6 +371,9 @@
             labelHandsSkin.style.display = !options.handsExist ? "none" : "";
             labelHandsBodyGroups.style.display = !options.handsExist ? "none" : "";
             labelhandsMatchBodySkin.style.display = !options.handsExist ? "none" : "";
+            labelNpcFriendlyClass.style.display = !options.npcFriendlyAdvanced ? "none" : "";
+            labelNpcFriendlyHealth.style.display = !options.npcFriendlyAdvanced ? "none" : "";
+            labelNpcFriendlyAdminOnly.style.display = !options.npcFriendlyAdvanced ? "none" : "";
 
             // hide inputs
             modelAuthor.style.display = !options.modelAuthorAdded ? "none" : "";
