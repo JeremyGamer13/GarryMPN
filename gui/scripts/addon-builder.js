@@ -363,6 +363,111 @@
         labelNpcFriendlyAdminOnly.appendChild(document.createTextNode("Friendly NPC is Admin Only?"));
         sectionNpcFriendly.appendChild(labelNpcFriendlyAdminOnly);
         // npc hostile
+        const labelNpcHostileName = document.createElement("label");
+        const npcHostileName = document.createElement("input");
+        labelNpcHostileName.innerText = "Hostile NPC Name:";
+        npcHostileName.type = "text";
+        npcHostileName.onblur = () => { options.npcHostileName = npcHostileName.value; updated(); };
+        npcHostileName.oninput = () => { options.npcHostileName = npcHostileName.value; updated(); };
+        npcHostileName.value = options.npcHostileName;
+        labelNpcHostileName.appendChild(npcHostileName);
+        sectionNpcHostile.appendChild(labelNpcHostileName);
+        const labelNpcHostileIconPath = document.createElement("label");
+        const checkboxNpcHostileIconPath = document.createElement("input");
+        const browseNpcHostileIconPath = document.createElement("button");
+        const npcHostileIconPath = document.createElement("input");
+        labelNpcHostileIconPath.innerText = "Hostile NPC Icon:";
+        checkboxNpcHostileIconPath.type = "checkbox";
+        checkboxNpcHostileIconPath.onblur = () => { options.npcHostileIconMake = checkboxNpcHostileIconPath.checked; updated(); };
+        checkboxNpcHostileIconPath.onchange = () => { options.npcHostileIconMake = checkboxNpcHostileIconPath.checked; updated(); };
+        checkboxNpcHostileIconPath.checked = options.npcHostileIconMake;
+        browseNpcHostileIconPath.innerText = "Browse";
+        browseNpcHostileIconPath.onclick = async () => {
+            const chosenPath = await GarryMPN.showOpenFileDialog(
+                npcHostileIconPath.placeholder,
+                [{ name: "Image", extensions: ["png", "jpeg", "jpg", "bmp", "webp"] }],
+                true
+            );
+            if (!chosenPath) return;
+            npcHostileIconPath.value = chosenPath;
+            updated();
+        };
+        npcHostileIconPath.type = "text";
+        npcHostileIconPath.onblur = () => { options.npcHostileIconPath = npcHostileIconPath.value; updated(); };
+        npcHostileIconPath.oninput = () => { options.npcHostileIconPath = npcHostileIconPath.value; updated(); };
+        npcHostileIconPath.value = options.npcHostileIconPath;
+        npcHostileIconPath.placeholder = "NPC Icon PNG path";
+        labelNpcHostileIconPath.appendChild(checkboxNpcHostileIconPath);
+        labelNpcHostileIconPath.appendChild(browseNpcHostileIconPath);
+        labelNpcHostileIconPath.appendChild(npcHostileIconPath);
+        sectionNpcHostile.appendChild(labelNpcHostileIconPath);
+        const labelNpcHostileCategory = document.createElement("label");
+        const checkboxNpcHostileCategory = document.createElement("input");
+        const npcHostileCategory = document.createElement("input");
+        labelNpcHostileCategory.innerText = "Hostile NPC Category:";
+        checkboxNpcHostileCategory.type = "checkbox";
+        checkboxNpcHostileCategory.onblur = () => { options.npcHostileCategoryCustom = checkboxNpcHostileCategory.checked; updated(); };
+        checkboxNpcHostileCategory.onchange = () => { options.npcHostileCategoryCustom = checkboxNpcHostileCategory.checked; updated(); };
+        checkboxNpcHostileCategory.checked = options.npcHostileCategoryCustom;
+        npcHostileCategory.type = "text";
+        npcHostileCategory.onblur = () => { options.npcHostileCategory = npcHostileCategory.value; updated(); };
+        npcHostileCategory.oninput = () => { options.npcHostileCategory = npcHostileCategory.value; updated(); };
+        npcHostileCategory.value = options.npcHostileCategory;
+        labelNpcHostileCategory.appendChild(checkboxNpcHostileCategory);
+        labelNpcHostileCategory.appendChild(npcHostileCategory);
+        sectionNpcHostile.appendChild(labelNpcHostileCategory);
+        const labelNpcHostileId = document.createElement("label");
+        const checkboxNpcHostileId = document.createElement("input");
+        const npcHostileId = document.createElement("input");
+        labelNpcHostileId.innerText = "Hostile NPC Custom ID:";
+        checkboxNpcHostileId.type = "checkbox";
+        checkboxNpcHostileId.onblur = () => { options.npcHostileIdCustom = checkboxNpcHostileId.checked; updated(); };
+        checkboxNpcHostileId.onchange = () => { options.npcHostileIdCustom = checkboxNpcHostileId.checked; updated(); };
+        checkboxNpcHostileId.checked = options.npcHostileIdCustom;
+        npcHostileId.type = "text";
+        npcHostileId.onblur = () => { options.npcHostileId = npcHostileId.value; updated(); };
+        npcHostileId.oninput = () => { options.npcHostileId = npcHostileId.value; updated(); };
+        npcHostileId.value = options.npcHostileId;
+        labelNpcHostileId.appendChild(checkboxNpcHostileId);
+        labelNpcHostileId.appendChild(npcHostileId);
+        sectionNpcHostile.appendChild(labelNpcHostileId);
+        const labelNpcHostileAdvanced = document.createElement("label");
+        const npcHostileAdvanced = document.createElement("input");
+        npcHostileAdvanced.type = "checkbox";
+        npcHostileAdvanced.onblur = () => { options.npcHostileAdvanced = npcHostileAdvanced.checked; updated(); };
+        npcHostileAdvanced.onchange = () => { options.npcHostileAdvanced = npcHostileAdvanced.checked; updated(); };
+        npcHostileAdvanced.checked = options.npcHostileAdvanced;
+        labelNpcHostileAdvanced.appendChild(npcHostileAdvanced);
+        labelNpcHostileAdvanced.appendChild(document.createTextNode("Hostile NPC: Advanced Customization?"));
+        sectionNpcHostile.appendChild(labelNpcHostileAdvanced);
+        const labelNpcHostileClass = document.createElement("label");
+        const npcHostileClass = document.createElement("input");
+        labelNpcHostileClass.innerText = "Hostile NPC Class:";
+        npcHostileClass.type = "text";
+        npcHostileClass.onblur = () => { options.npcHostileClass = npcHostileClass.value; updated(); };
+        npcHostileClass.oninput = () => { options.npcHostileClass = npcHostileClass.value; updated(); };
+        npcHostileClass.value = options.npcHostileClass;
+        labelNpcHostileClass.appendChild(npcHostileClass);
+        sectionNpcHostile.appendChild(labelNpcHostileClass);
+        const labelNpcHostileHealth = document.createElement("label");
+        const npcHostileHealth = document.createElement("input");
+        labelNpcHostileHealth.innerText = "Hostile NPC Health:";
+        npcHostileHealth.type = "number";
+        npcHostileHealth.onblur = () => { options.npcHostileHealth = npcHostileHealth.value; updated(); };
+        npcHostileHealth.oninput = () => { options.npcHostileHealth = npcHostileHealth.value; updated(); };
+        npcHostileHealth.value = options.npcHostileHealth;
+        npcHostileHealth.min = "0";
+        labelNpcHostileHealth.appendChild(npcHostileHealth);
+        sectionNpcHostile.appendChild(labelNpcHostileHealth);
+        const labelNpcHostileAdminOnly = document.createElement("label");
+        const npcHostileAdminOnly = document.createElement("input");
+        npcHostileAdminOnly.type = "checkbox";
+        npcHostileAdminOnly.onblur = () => { options.npcHostileAdminOnly = npcHostileAdminOnly.checked; updated(); };
+        npcHostileAdminOnly.onchange = () => { options.npcHostileAdminOnly = npcHostileAdminOnly.checked; updated(); };
+        npcHostileAdminOnly.checked = options.npcHostileAdminOnly;
+        labelNpcHostileAdminOnly.appendChild(npcHostileAdminOnly);
+        labelNpcHostileAdminOnly.appendChild(document.createTextNode("Hostile NPC is Admin Only?"));
+        sectionNpcHostile.appendChild(labelNpcHostileAdminOnly);
 
         const updated = () => {
             // sections
@@ -378,6 +483,9 @@
             labelNpcFriendlyClass.style.display = !options.npcFriendlyAdvanced ? "none" : "";
             labelNpcFriendlyHealth.style.display = !options.npcFriendlyAdvanced ? "none" : "";
             labelNpcFriendlyAdminOnly.style.display = !options.npcFriendlyAdvanced ? "none" : "";
+            labelNpcHostileClass.style.display = !options.npcHostileAdvanced ? "none" : "";
+            labelNpcHostileHealth.style.display = !options.npcHostileAdvanced ? "none" : "";
+            labelNpcHostileAdminOnly.style.display = !options.npcHostileAdvanced ? "none" : "";
 
             // hide inputs
             modelAuthor.style.display = !options.modelAuthorAdded ? "none" : "";
@@ -388,6 +496,10 @@
             npcFriendlyIconPath.style.display = !options.npcFriendlyIconMake ? "none" : "";
             npcFriendlyCategory.style.display = !options.npcFriendlyCategoryCustom ? "none" : "";
             npcFriendlyId.style.display = !options.npcFriendlyIdCustom ? "none" : "";
+            browseNpcHostileIconPath.style.display = !options.npcHostileIconMake ? "none" : "";
+            npcHostileIconPath.style.display = !options.npcHostileIconMake ? "none" : "";
+            npcHostileCategory.style.display = !options.npcHostileCategoryCustom ? "none" : "";
+            npcHostileId.style.display = !options.npcHostileIdCustom ? "none" : "";
         };
 
         // add all of the children
