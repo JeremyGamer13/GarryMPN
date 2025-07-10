@@ -47,7 +47,15 @@
     const inputFolderOutput = document.getElementById("inner-addon-folder-output");
     const inputFolderModels = document.getElementById("inner-addon-folder-models");
     const inputFolderMaterials = document.getElementById("inner-addon-folder-materials");
-    for (const input of [inputFolderOutput, inputFolderModels, inputFolderMaterials]) {
+    const inputIconFriendlyFront = document.getElementById("inner-addon-model-icon-friendly-front");
+    const inputIconFriendlyBack = document.getElementById("inner-addon-model-icon-friendly-back");
+    const inputIconHostileFront = document.getElementById("inner-addon-model-icon-hostile-front");
+    const inputIconHostileBack = document.getElementById("inner-addon-model-icon-hostile-back");
+    for (const input of [
+        inputFolderOutput,
+        inputFolderModels,
+        inputFolderMaterials,
+    ]) {
         const browseButton = document.getElementById(`${input.id}-browse`);
         if (!browseButton) continue;
         browseButton.onclick = async () => {
@@ -60,6 +68,54 @@
     }
     inputFolderModels.onblur = () => {
         listMdlFromFolder(inputFolderModels.value);
+    };
+    // model-icon-options paths
+    for (const input of [
+        inputIconFriendlyFront,
+        inputIconFriendlyBack,
+        inputIconHostileFront,
+        inputIconHostileBack,
+    ]) {
+        const browseButton = document.getElementById(`${input.id}-browse`);
+        if (!browseButton) continue;
+        browseButton.onclick = async () => {
+            const chosenPath = await GarryMPN.showOpenFileDialog(
+                input.placeholder,
+                [{ name: "Image", extensions: ["png", "jpeg", "jpg", "bmp", "webp"] }],
+                true
+            );
+            if (!chosenPath) return;
+            input.value = chosenPath;
+            iconOverlayUpdate();
+        };
+    }
+
+    // model-icon-options
+    const inputOverlayFriendlyFront = document.getElementById("inner-addon-model-icon-friendly-front-apply");
+    const inputOverlayFriendlyBack = document.getElementById("inner-addon-model-icon-friendly-back-apply");
+    const inputOverlayHostileFront = document.getElementById("inner-addon-model-icon-hostile-front-apply");
+    const inputOverlayHostileBack = document.getElementById("inner-addon-model-icon-hostile-back-apply");
+    const inputResizeFriendly = document.getElementById("inner-addon-model-icon-friendly-resize");
+    const inputResizeHostile = document.getElementById("inner-addon-model-icon-hostile-resize");
+    let iconResizeFriendly = true;
+    let iconResizeHostile = true;
+    let iconOverlayFriendlyFront = true;
+    let iconOverlayFriendlyBack = true;
+    let iconOverlayHostileFront = true;
+    let iconOverlayHostileBack = true;
+    inputOverlayFriendlyFront.onchange = () => iconOverlayUpdate();
+    inputOverlayFriendlyBack.onchange = () => iconOverlayUpdate();
+    inputOverlayHostileFront.onchange = () => iconOverlayUpdate();
+    inputOverlayHostileBack.onchange = () => iconOverlayUpdate();
+    inputResizeFriendly.onchange = () => iconOverlayUpdate();
+    inputResizeHostile.onchange = () => iconOverlayUpdate();
+    const iconOverlayUpdate = () => {
+        iconResizeFriendly = inputResizeFriendly.checked;
+        iconResizeHostile = inputResizeHostile.checked;
+        iconOverlayFriendlyFront = inputOverlayFriendlyFront.checked;
+        iconOverlayFriendlyBack = inputOverlayFriendlyBack.checked;
+        iconOverlayHostileFront = inputOverlayHostileFront.checked;
+        iconOverlayHostileBack = inputOverlayHostileBack.checked;
     };
 
     // mdl list
@@ -723,8 +779,29 @@
                         const targetFile = await path.join(targetFolder, `${mdl.npcFriendlyId}.png`);
                         options.npciconf = mdl.npcFriendlyIconPath;
                         options.npciconfout = targetFile;
-                        // temp: add npciconfr (resize to 256x256)
-                        options.npciconfr = true;
+                        if (iconOverlayFriendlyBack) {
+                            options.npciconfb = inputIconFriendlyBack.value;
+                        }
+                        if (iconOverlayFriendlyFront) {
+                            options.npciconff = inputIconFriendlyFront.value;
+                        }
+                        if (iconResizeFriendly) {
+                            options.npciconfr = true;
+                        }
+                    }
+                    if (mdl.npcHostileIconMake && mdl.npcHostileIconPath) {
+                        const targetFile = await path.join(targetFolder, `${mdl.npcHostileId}.png`);
+                        options.npciconh = mdl.npcHostileIconPath;
+                        options.npciconhout = targetFile;
+                        if (iconOverlayHostileBack) {
+                            options.npciconhb = inputIconHostileBack.value;
+                        }
+                        if (iconOverlayHostileFront) {
+                            options.npciconhf = inputIconHostileFront.value;
+                        }
+                        if (iconResizeHostile) {
+                            options.npciconhr = true;
+                        }
                     }
                     const { output, warning } = await GarryMPN.invokeCli(options);
                     if (warning) addonWarning(false, true, warning);
