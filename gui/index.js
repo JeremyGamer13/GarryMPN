@@ -87,6 +87,12 @@ const createProtocols = () => {
         });
     });
 };
+const validateIpcEvent = (event) => {
+    if (!event.senderFrame) return false;
+    const url = new URL(event.senderFrame.url);
+    if (url.protocol !== "app:") return false;
+    return true;
+};
 const createIpcHandlers = () => {
     // the non-dev mode path is next to the exe since its in extraFiles in ../electron-builder.json
     const cliPath = devMode
@@ -107,7 +113,8 @@ const createIpcHandlers = () => {
     electron.ipcMain.handle("module-path-resolve", async (_, [...paths]) => modulePath.resolve(...paths));
     electron.ipcMain.handle("module-slash", async (_, path) => slash.default(path));
     // garrympn
-    electron.ipcMain.handle("garrympn-prompt-question", async (_, options) => {
+    electron.ipcMain.handle("garrympn-prompt-question", async (event, options) => {
+        if (!validateIpcEvent(event)) return;
         const question = await electron.dialog.showMessageBox({
             type: "question",
             title: options.title,
@@ -117,7 +124,8 @@ const createIpcHandlers = () => {
         });
         return question.response;
     });
-    electron.ipcMain.handle("garrympn-picker-folder", async (_, title) => {
+    electron.ipcMain.handle("garrympn-picker-folder", async (event, title) => {
+        if (!validateIpcEvent(event)) return;
         const { canceled, filePaths } = await electron.dialog.showOpenDialog({
             title,
             properties: ["openDirectory", "createDirectory", "promptToCreate"]
@@ -129,7 +137,8 @@ const createIpcHandlers = () => {
         if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath, { recursive: true });
         return folderPath ? folderPath : false;
     });
-    electron.ipcMain.handle("garrympn-picker-file", async (_, options) => {
+    electron.ipcMain.handle("garrympn-picker-file", async (event, options) => {
+        if (!validateIpcEvent(event)) return;
         const { canceled, filePaths } = await electron.dialog.showOpenDialog({
             title: options.title,
             properties: ["openFile"],
@@ -146,7 +155,8 @@ const createIpcHandlers = () => {
             return electron.shell.showItemInFolder(path);
         }
     });
-    electron.ipcMain.handle("garrympn-read-folder", async (_, path) => {
+    electron.ipcMain.handle("garrympn-read-folder", async (event, path) => {
+        if (!validateIpcEvent(event)) return;
         const files = await glob.glob(`${path}/**/*`, {
             nodir: false,
             absolute: true,
@@ -154,7 +164,8 @@ const createIpcHandlers = () => {
         });
         return files;
     });
-    electron.ipcMain.handle("garrympn-invoke-cli", async (_, argsObj) => {
+    electron.ipcMain.handle("garrympn-invoke-cli", async (event, argsObj) => {
+        if (!validateIpcEvent(event)) return;
         const cliArgs = [];
         for (const key in argsObj) {
             const value = argsObj[key];

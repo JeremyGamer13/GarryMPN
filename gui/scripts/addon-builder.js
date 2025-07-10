@@ -548,7 +548,7 @@
             // done
             UtilAlert.showAlert("alert", "Models found, adjust settings for the addon.");
         }, "View the models list for options.");
-    }; 
+    };
 
     // buttons
     const buttonQuickGenerate = document.getElementById("inner-addon-quick-generate");
