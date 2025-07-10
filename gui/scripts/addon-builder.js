@@ -51,7 +51,7 @@
         const browseButton = document.getElementById(`${input.id}-browse`);
         if (!browseButton) continue;
         browseButton.onclick = async () => {
-            const chosenPath = await GarryMPN.showOpenDialog(input.placeholder);
+            const chosenPath = await GarryMPN.showOpenFolderDialog(input.placeholder);
             if (!chosenPath) return;
             input.value = chosenPath;
             // make the lists update (the functions will check if we need to reload)
@@ -277,7 +277,11 @@
         checkboxNpcFriendlyIconPath.checked = options.npcFriendlyIconMake;
         browseNpcFriendlyIconPath.innerText = "Browse";
         browseNpcFriendlyIconPath.onclick = async () => {
-            const chosenPath = await GarryMPN.showOpenDialog(npcFriendlyIconPath.placeholder);
+            const chosenPath = await GarryMPN.showOpenFileDialog(
+                npcFriendlyIconPath.placeholder,
+                [{ name: "Image", extensions: ["png", "jpeg", "jpg", "bmp", "webp"] }],
+                true
+            );
             if (!chosenPath) return;
             npcFriendlyIconPath.value = chosenPath;
             updated();

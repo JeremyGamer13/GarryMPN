@@ -129,6 +129,18 @@ const createIpcHandlers = () => {
         if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath, { recursive: true });
         return folderPath ? folderPath : false;
     });
+    electron.ipcMain.handle("garrympn-picker-file", async (_, options) => {
+        const { canceled, filePaths } = await electron.dialog.showOpenDialog({
+            title: options.title,
+            properties: ["openFile"],
+            filters: options.filters,
+        });
+        if (canceled) return false;
+
+        // make the folder if it doesnt exist
+        const filePath = filePaths[0];
+        return filePath ? filePath : false;
+    });
     electron.ipcMain.handle("garrympn-locate", async (_, path) => {
         if (fs.existsSync(path)) {
             return electron.shell.showItemInFolder(path);

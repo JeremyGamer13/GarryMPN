@@ -19,8 +19,28 @@ GarryMPN.invokeCli = async (argsObj) => {
     return await electron.ipcRenderer.invoke("garrympn-invoke-cli", argsObj);
 };
 
-GarryMPN.showOpenDialog = async (title) => {
+GarryMPN.showOpenFolderDialog = async (title) => {
     return await electron.ipcRenderer.invoke("garrympn-picker-folder", title);
+};
+GarryMPN.showOpenFileDialog = async (title, filters, autofill, removeAny) => {
+    let addedFilters = filters;
+
+    const fileTypes = [];
+    for (const filter of filters) {
+        for (const extension of filter.extensions) {
+            if (fileTypes.includes(extension)) continue;
+            fileTypes.push(extension);
+        }
+    }
+
+    if (autofill) {
+        addedFilters = addedFilters.concat(fileTypes.map(fileType => ({ name: fileType.toUpperCase(), extensions: [fileType] })));
+    }
+    if (!removeAny) {
+        const anyOption = { name: "Any", extensions: fileTypes };
+        addedFilters.push(anyOption);
+    }
+    return await electron.ipcRenderer.invoke("garrympn-picker-file", { title, filters: addedFilters });
 };
 GarryMPN.readFolder = async (path) => {
     return await electron.ipcRenderer.invoke("garrympn-read-folder", path);
