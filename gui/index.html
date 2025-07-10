@@ -86,7 +86,66 @@
                             <button id="inner-addon-folder-models-browse">Browse</button>
                             <input id="inner-addon-folder-models" type="text" placeholder="Models folder with subfolders until .mdl file">
                         </label>
-                        <p id="inner-addon-model-list-detail" style="display:none"></p>
+                        <p class="style-small style-p-margin">NPC Icon Overlays</p>
+                        <div id="inner-addon-model-icon-options">
+                            <div class="inner-addon-model-icon-options-faces">
+                                <div class="inner-addon-model-icon-options-overlay">
+                                    <span>Friendly NPC Front Overlay</span>
+                                    <label>
+                                        <button id="inner-addon-model-icon-friendly-front-browse">Browse</button>
+                                        <input id="inner-addon-model-icon-friendly-front" type="text" placeholder="Image to overlay above Friendly NPC Icon">
+                                    </label>
+                                    <label>
+                                        <input id="inner-addon-model-icon-friendly-front-apply" type="checkbox">
+                                        <span>Apply</span>
+                                    </label>
+                                </div>
+                                <div class="inner-addon-model-icon-options-overlay">
+                                    <span>Friendly NPC Back Overlay</span>
+                                    <label>
+                                        <button id="inner-addon-model-icon-friendly-back-browse">Browse</button>
+                                        <input id="inner-addon-model-icon-friendly-back" type="text" placeholder="Image to overlay below Friendly NPC Icon">
+                                    </label>
+                                    <label>
+                                        <input id="inner-addon-model-icon-friendly-back-apply" type="checkbox">
+                                        <span>Apply</span>
+                                    </label>
+                                </div>
+                                <div class="inner-addon-model-icon-options-overlay">
+                                    <span>Hostile NPC Front Overlay</span>
+                                    <label>
+                                        <button id="inner-addon-model-icon-hostile-front-browse">Browse</button>
+                                        <input id="inner-addon-model-icon-hostile-front" type="text" placeholder="Image to overlay above Hostile NPC Icon">
+                                    </label>
+                                    <label>
+                                        <input id="inner-addon-model-icon-hostile-front-apply" type="checkbox">
+                                        <span>Apply</span>
+                                    </label>
+                                </div>
+                                <div class="inner-addon-model-icon-options-overlay">
+                                    <span>Hostile NPC Back Overlay</span>
+                                    <label>
+                                        <button id="inner-addon-model-icon-hostile-back-browse">Browse</button>
+                                        <input id="inner-addon-model-icon-hostile-back" type="text" placeholder="Image to overlay below Hostile NPC Icon">
+                                    </label>
+                                    <label>
+                                        <input id="inner-addon-model-icon-hostile-back-apply" type="checkbox">
+                                        <span>Apply</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="inner-addon-model-icon-options-resizers">
+                                <label>
+                                    <input id="inner-addon-model-icon-friendly-resize" type="checkbox">
+                                    <span>Resize Friendly Icon to 256x256</span>
+                                </label>
+                                <label>
+                                    <input id="inner-addon-model-icon-hostile-resize" type="checkbox">
+                                    <span>Resize Hostile Icon to 256x256</span>
+                                </label>
+                            </div>
+                        </div>
+                        <p id="inner-addon-model-list-detail" class="style-small style-p-margin" style="display:none"></p>
                         <div id="inner-addon-model-list">
                             <!-- lists all of the mdl files, with options on them -->
                         </div>

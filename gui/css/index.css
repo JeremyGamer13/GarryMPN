@@ -80,3 +80,6 @@ button:active::before {
 .style-far {
     opacity: 0.5;
 }
+.style-p-margin {
+    margin-block: 4px;
+}

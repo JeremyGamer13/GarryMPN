@@ -284,6 +284,7 @@
             );
             if (!chosenPath) return;
             npcFriendlyIconPath.value = chosenPath;
+            options.npcFriendlyIconPath = npcFriendlyIconPath.value;
             updated();
         };
         npcFriendlyIconPath.type = "text";
@@ -390,6 +391,7 @@
             );
             if (!chosenPath) return;
             npcHostileIconPath.value = chosenPath;
+            options.npcHostileIconPath = npcHostileIconPath.value;
             updated();
         };
         npcHostileIconPath.type = "text";
@@ -522,13 +524,15 @@
             // read folder
             const folderContents = await GarryMPN.readFolder(modelsFolder);
             const mdlContents = folderContents.filter(file => file.endsWith(".mdl"));
+            mdlListDetail.style.display = "";
             if (mdlContents.length <= 0) {
-                mdlListDetail.style.display = "";
                 if (folderContents.some(file => file.endsWith(".qc") || file.endsWith(".smd"))) {
                     mdlListDetail.innerText = "No MDL files found. Note that a QC or SMD file was found, make sure this folder contains a compiled MDL model.";
                 } else {
                     mdlListDetail.innerText = "No MDL files found.";
                 }
+            } else {
+                mdlListDetail.innerText = "Models List";
             }
 
             // for each model, make the options & then elements & stuff
@@ -643,8 +647,8 @@
         });
         for (const mdl of listMdlOptions) {
             if (mdl.ignored) continue;
-            // make lua
             const modelId = mdl.coreFileNameNoExt;
+            // make lua
             const randomId = `${Math.random() * 99999999}`.replace(/\./g, "");
             const luaName = `model_${modelId.replace(/[^a-z0-9]/g, "_")}_${randomId}.lua`;
             const luaPath = await path.join(luaFolder, luaName);
@@ -707,7 +711,25 @@
                 const { output, warning } = await GarryMPN.invokeCli(options);
                 if (warning) addonWarning(false, true, warning);
             });
-            // make icons
+            if ((mdl.npcFriendlyIconMake && mdl.npcFriendlyIconPath) || (mdl.npcHostileIconMake && mdl.npcHostileIconPath)) {
+                // make icons
+                const targetFolder = await path.join(outputFolder, "materials/entities/");
+                await addonInfoBusy("garrympn-addon-build-icons", `Making icons for "${modelId}"`, async () => {
+                    // make folder
+                    await GarryMPN.invokeCli({ mkdir: targetFolder });
+                    // make icons
+                    const options = {};
+                    if (mdl.npcFriendlyIconMake && mdl.npcFriendlyIconPath) {
+                        const targetFile = await path.join(targetFolder, `${mdl.npcFriendlyId}.png`);
+                        options.npciconf = mdl.npcFriendlyIconPath;
+                        options.npciconfout = targetFile;
+                        // temp: add npciconfr (resize to 256x256)
+                        options.npciconfr = true;
+                    }
+                    const { output, warning } = await GarryMPN.invokeCli(options);
+                    if (warning) addonWarning(false, true, warning);
+                });
+            }
         }
     };
 
