@@ -92,19 +92,27 @@
             handsHasBodyGroups: false,
             handsBodyGroups: "0000000",
             handsMatchBodySkin: false,
-            npcFriendlyId: `npc_${nameNoExt.toLowerCase()}_friendly`,
             npcFriendlyName: `${nameNoExt} (Friendly)`,
+            npcFriendlyIconMake: true,
+            npcFriendlyIconPath: "",
+            npcFriendlyCategoryCustom: true,
+            npcFriendlyCategory: "Other",
+            npcFriendlyId: `npc_${nameNoExt.toLowerCase()}_friendly`,
+            npcFriendlyIdCustom: true,
+            npcFriendlyAdvanced: false,
             npcFriendlyClass: "npc_citizen",
             npcFriendlyHealth: 100,
-            npcFriendlyCategory: "Other",
-            npcFriendlyIconPath: "",
             npcFriendlyAdminOnly: false,
-            npcHostileId: `npc_${nameNoExt.toLowerCase()}_hostile`,
             npcHostileName: `${nameNoExt} (Hostile)`,
+            npcHostileIconMake: true,
+            npcHostileIconPath: "",
+            npcHostileCategoryCustom: true,
+            npcHostileCategory: "Other",
+            npcHostileId: `npc_${nameNoExt.toLowerCase()}_hostile`,
+            npcHostileIdCustom: true,
+            npcHostileAdvanced: false,
             npcHostileClass: "npc_combine",
             npcHostileHealth: 100,
-            npcHostileCategory: "Other",
-            npcHostileIconPath: "",
             npcHostileAdminOnly: false,
         };
         return options;
@@ -249,6 +257,79 @@
         labelhandsMatchBodySkin.appendChild(document.createTextNode("Hands Match Body Skin?"));
         sectionPlayer.appendChild(labelhandsMatchBodySkin);
         // npc friendly
+        const labelNpcFriendlyName = document.createElement("label");
+        const npcFriendlyName = document.createElement("input");
+        labelNpcFriendlyName.innerText = "Friendly NPC Name:";
+        npcFriendlyName.type = "text";
+        npcFriendlyName.onblur = () => { options.npcFriendlyName = npcFriendlyName.value; updated(); };
+        npcFriendlyName.oninput = () => { options.npcFriendlyName = npcFriendlyName.value; updated(); };
+        npcFriendlyName.value = options.npcFriendlyName;
+        labelNpcFriendlyName.appendChild(npcFriendlyName);
+        sectionNpcFriendly.appendChild(labelNpcFriendlyName);
+        const labelNpcFriendlyIconPath = document.createElement("label");
+        const checkboxNpcFriendlyIconPath = document.createElement("input");
+        const browseNpcFriendlyIconPath = document.createElement("button");
+        const npcFriendlyIconPath = document.createElement("input");
+        labelNpcFriendlyIconPath.innerText = "Friendly NPC Icon:";
+        checkboxNpcFriendlyIconPath.type = "checkbox";
+        checkboxNpcFriendlyIconPath.onblur = () => { options.npcFriendlyIconMake = checkboxNpcFriendlyIconPath.checked; updated(); };
+        checkboxNpcFriendlyIconPath.onchange = () => { options.npcFriendlyIconMake = checkboxNpcFriendlyIconPath.checked; updated(); };
+        checkboxNpcFriendlyIconPath.checked = options.npcFriendlyIconMake;
+        browseNpcFriendlyIconPath.innerText = "Browse";
+        browseNpcFriendlyIconPath.onclick = async () => {
+            const chosenPath = await GarryMPN.showOpenDialog(npcFriendlyIconPath.placeholder);
+            if (!chosenPath) return;
+            npcFriendlyIconPath.value = chosenPath;
+            updated();
+        };
+        npcFriendlyIconPath.type = "text";
+        npcFriendlyIconPath.onblur = () => { options.npcFriendlyIconPath = npcFriendlyIconPath.value; updated(); };
+        npcFriendlyIconPath.oninput = () => { options.npcFriendlyIconPath = npcFriendlyIconPath.value; updated(); };
+        npcFriendlyIconPath.placeholder = "NPC Icon PNG path";
+        npcFriendlyIconPath.value = options.npcFriendlyIconPath;
+        labelNpcFriendlyIconPath.appendChild(checkboxNpcFriendlyIconPath);
+        labelNpcFriendlyIconPath.appendChild(browseNpcFriendlyIconPath);
+        labelNpcFriendlyIconPath.appendChild(npcFriendlyIconPath);
+        sectionNpcFriendly.appendChild(labelNpcFriendlyIconPath);
+        const labelNpcFriendlyCategory = document.createElement("label");
+        const checkboxNpcFriendlyCategory = document.createElement("input");
+        const npcFriendlyCategory = document.createElement("input");
+        labelNpcFriendlyCategory.innerText = "Friendly NPC Category:";
+        checkboxNpcFriendlyCategory.type = "checkbox";
+        checkboxNpcFriendlyCategory.onblur = () => { options.npcFriendlyCategoryCustom = checkboxNpcFriendlyCategory.checked; updated(); };
+        checkboxNpcFriendlyCategory.onchange = () => { options.npcFriendlyCategoryCustom = checkboxNpcFriendlyCategory.checked; updated(); };
+        checkboxNpcFriendlyCategory.checked = options.npcFriendlyCategoryCustom;
+        npcFriendlyCategory.type = "text";
+        npcFriendlyCategory.onblur = () => { options.npcFriendlyCategory = npcFriendlyCategory.value; updated(); };
+        npcFriendlyCategory.oninput = () => { options.npcFriendlyCategory = npcFriendlyCategory.value; updated(); };
+        npcFriendlyCategory.value = options.npcFriendlyCategory;
+        labelNpcFriendlyCategory.appendChild(checkboxNpcFriendlyCategory);
+        labelNpcFriendlyCategory.appendChild(npcFriendlyCategory);
+        sectionNpcFriendly.appendChild(labelNpcFriendlyCategory);
+        const labelNpcFriendlyId = document.createElement("label");
+        const checkboxNpcFriendlyId = document.createElement("input");
+        const npcFriendlyId = document.createElement("input");
+        labelNpcFriendlyId.innerText = "Friendly NPC Custom ID:";
+        checkboxNpcFriendlyId.type = "checkbox";
+        checkboxNpcFriendlyId.onblur = () => { options.npcFriendlyIdCustom = checkboxNpcFriendlyId.checked; updated(); };
+        checkboxNpcFriendlyId.onchange = () => { options.npcFriendlyIdCustom = checkboxNpcFriendlyId.checked; updated(); };
+        checkboxNpcFriendlyId.checked = options.npcFriendlyIdCustom;
+        npcFriendlyId.type = "text";
+        npcFriendlyId.onblur = () => { options.npcFriendlyId = npcFriendlyId.value; updated(); };
+        npcFriendlyId.oninput = () => { options.npcFriendlyId = npcFriendlyId.value; updated(); };
+        npcFriendlyId.value = options.npcFriendlyId;
+        labelNpcFriendlyId.appendChild(checkboxNpcFriendlyId);
+        labelNpcFriendlyId.appendChild(npcFriendlyId);
+        sectionNpcFriendly.appendChild(labelNpcFriendlyId);
+        const labelNpcFriendlyAdvanced = document.createElement("label");
+        const npcFriendlyAdvanced = document.createElement("input");
+        npcFriendlyAdvanced.type = "checkbox";
+        npcFriendlyAdvanced.onblur = () => { options.npcFriendlyAdvanced = npcFriendlyAdvanced.checked; updated(); };
+        npcFriendlyAdvanced.onchange = () => { options.npcFriendlyAdvanced = npcFriendlyAdvanced.checked; updated(); };
+        npcFriendlyAdvanced.checked = options.npcFriendlyAdvanced;
+        labelNpcFriendlyAdvanced.appendChild(npcFriendlyAdvanced);
+        labelNpcFriendlyAdvanced.appendChild(document.createTextNode("Friendly NPC: Advanced Customization?"));
+        sectionNpcFriendly.appendChild(labelNpcFriendlyAdvanced);
         // npc hostile
 
         const updated = () => {
@@ -268,6 +349,10 @@
             handsModel.style.display = !options.handsExist ? "none" : "";
             handsSkin.style.display = !options.handsHasSkin ? "none" : "";
             handsBodyGroups.style.display = !options.handsHasBodyGroups ? "none" : "";
+            browseNpcFriendlyIconPath.style.display = !options.npcFriendlyIconMake ? "none" : "";
+            npcFriendlyIconPath.style.display = !options.npcFriendlyIconMake ? "none" : "";
+            npcFriendlyCategory.style.display = !options.npcFriendlyCategoryCustom ? "none" : "";
+            npcFriendlyId.style.display = !options.npcFriendlyIdCustom ? "none" : "";
         };
 
         // add all of the children
@@ -409,16 +494,18 @@
             // make lua folder
             await GarryMPN.invokeCli({ mkdir: luaFolder });
         });
-        // make lua
         for (const mdl of listMdlOptions) {
+            if (mdl.ignored) continue;
+            // make lua
             const modelId = mdl.coreFileNameNoExt;
             const randomId = `${Math.random() * 99999999}`.replace(/\./g, "");
-            const luaName = `model_${modelId}_${randomId}.lua`;
+            const luaName = `model_${modelId.replace(/[^a-z0-9]/g, "_")}_${randomId}.lua`;
             const luaPath = await path.join(luaFolder, luaName);
             await addonInfoBusy("garrympn-addon-build-lua", `Generating lua file "${luaName}"`, async () => {
                 const options = {};
                 options.lua = luaPath;
                 // user options
+                // player model
                 if (mdl.makePlayerModel) {
                     options.luapm = await slash(mdl.coreGmodPath);
                     options.luapmn = mdl.modelName;
@@ -435,10 +522,42 @@
                         options.luaphm = mdl.handsMatchBodySkin;
                     }
                 }
+                // npc friendly
+                if (mdl.makeNpcFriendly) {
+                    options.luanf = !mdl.npcFriendlyIdCustom ? `npc_${mdl.coreFileNameNoExt.toLowerCase()}_friendly` : mdl.npcFriendlyId;
+                    options.luanfn = mdl.npcFriendlyName;
+                    options.luanfm = await slash(mdl.coreGmodPath);
+                    options.luanfct = !mdl.npcFriendlyCategoryCustom ? "Other" : mdl.npcFriendlyCategory;
+                    if (mdl.modelAuthorAdded) {
+                        options.luanfa = mdl.modelAuthor;
+                    }
+                    if (mdl.npcFriendlyAdvanced) {
+                        options.luanfc = mdl.npcFriendlyClass;
+                        options.luanfh = mdl.npcFriendlyHealth;
+                        options.luanfao = mdl.npcFriendlyAdminOnly;
+                    }
+                }
+                // npc hostile
+                if (mdl.makeNpcHostile) {
+                    options.luanh = !mdl.npcHostileIdCustom ? `npc_${mdl.coreFileNameNoExt.toLowerCase()}_hostile` : mdl.npcHostileId;
+                    options.luanhn = mdl.npcHostileName;
+                    options.luanhm = await slash(mdl.coreGmodPath);
+                    options.luanhct = !mdl.npcHostileCategoryCustom ? "Other" : mdl.npcHostileCategory;
+                    if (mdl.modelAuthorAdded) {
+                        options.luanha = mdl.modelAuthor;
+                    }
+                    if (mdl.npcHostileAdvanced) {
+                        options.luanhc = mdl.npcHostileClass;
+                        options.luanhh = mdl.npcHostileHealth;
+                        options.luanhct = mdl.npcHostileCategory;
+                        options.luanhao = mdl.npcHostileAdminOnly;
+                    }
+                }
                 // cli
                 const { output, warning } = await GarryMPN.invokeCli(options);
                 if (warning) addonWarning(false, true, warning);
             });
+            // make icons
         }
     };
 

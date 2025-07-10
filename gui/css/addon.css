@@ -50,7 +50,7 @@
 #inner-addon-model-list > div {
     width: 100%;
     height: fit-content;
-    max-width: 420px;
+    max-width: 512px;
     padding: 0 4px;
 
     border: 1px solid rgba(255, 255, 255, 0.25);
