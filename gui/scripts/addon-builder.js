@@ -581,19 +581,20 @@
             const folderContents = await GarryMPN.readFolder(modelsFolder);
             const mdlContents = folderContents.filter(file => file.endsWith(".mdl"));
             mdlListDetail.style.display = "";
+            listMdlOptions.splice(0, listMdlOptions.length);
+
             if (mdlContents.length <= 0) {
                 if (folderContents.some(file => file.endsWith(".qc") || file.endsWith(".smd"))) {
                     mdlListDetail.innerText = "No MDL files found. Note that a QC or SMD file was found, make sure this folder contains a compiled MDL model.";
                 } else {
                     mdlListDetail.innerText = "No MDL files found.";
                 }
+                return;
             } else {
                 mdlListDetail.innerText = "Models List";
             }
 
             // for each model, make the options & then elements & stuff
-            listMdlOptions.splice(0, listMdlOptions.length);
-
             mdlList.innerHTML = "";
             for (const model of mdlContents) {
                 // make options
@@ -608,6 +609,120 @@
             // done
             UtilAlert.showAlert("alert", "Models found, adjust settings for the addon.");
         }, "View the models list for options.");
+    };
+
+    // vtf list
+    let listVtfTarget = ""; // which folder is loaded right now
+    const listVtfOptions = [];
+    const listVtfOption = async (materialsFolder, filePath) => {
+        const fileName = await path.basename(filePath);
+        const extName = await path.extname(filePath);
+        const gmodPath = await path.relative(materialsFolder, filePath);
+        let nameNoExt = String(fileName.split(".").slice(0, -1).join("."));
+
+        const options = {
+            coreMaterialsFolder: materialsFolder,
+            coreFilePath: filePath,
+            coreFileName: fileName,
+            coreFileExt: extName,
+            coreGmodPath: gmodPath,
+            coreFileNameNoExt: nameNoExt,
+            ignored: false,
+            textureType: "VertexlitGeneric"
+        };
+        return options;
+    };
+    const listVtfItem = async (filePath, materialsFolder, options) => {
+        const fileName = await path.basename(filePath);
+        const gmodPath = await path.relative(materialsFolder, filePath);
+
+        const texture = document.createElement("div");
+        const textureTitle = document.createElement("h3");
+        const texturePath = document.createElement("p");
+        textureTitle.innerText = fileName;
+        texturePath.classList.add("style-small");
+        texturePath.classList.add("style-far");
+        texturePath.innerText = gmodPath;
+
+        // make sections
+        const sectionTexture = document.createElement("div");
+
+        // make inputs
+        // default & texture section
+        const labelIgnored = document.createElement("label");
+        const ignored = document.createElement("input");
+        ignored.type = "checkbox";
+        ignored.onblur = () => { options.ignored = ignored.checked; updated(); };
+        ignored.onchange = () => { options.ignored = ignored.checked; updated(); };
+        ignored.checked = options.ignored;
+        labelIgnored.appendChild(ignored);
+        labelIgnored.appendChild(document.createTextNode("Don't make VMT?"));
+        const labelTextureType = document.createElement("label");
+        const textureType = document.createElement("select");
+        labelTextureType.innerText = "Material Type:";
+        textureType.onblur = () => { options.textureType = textureType.value; updated(); };
+        textureType.onchange = () => { options.textureType = textureType.value; updated(); };
+        textureType.value = options.textureType;
+        const optionTextureTypeVertexlitGeneric = document.createElement("option");
+        optionTextureTypeVertexlitGeneric.innerText = "Vertex Lit";
+        optionTextureTypeVertexlitGeneric.value = "VertexlitGeneric";
+        textureType.appendChild(optionTextureTypeVertexlitGeneric);
+        labelTextureType.appendChild(textureType);
+        sectionTexture.appendChild(labelTextureType);
+        // other sections
+        // sectionTexture.appendChild(sectionPlayer);
+
+        const updated = () => {
+            // sections
+            sectionTexture.style.display = options.ignored ? "none" : "";
+        };
+
+        // add all of the children
+        texture.appendChild(textureTitle);
+        texture.appendChild(texturePath);
+        texture.appendChild(labelIgnored);
+        texture.appendChild(sectionTexture);
+        updated();
+        return texture;
+    };
+    const listVtfFromFolder = async (materialsFolder) => {
+        if (listVtfTarget === materialsFolder) return;
+        listVtfTarget = materialsFolder;
+        console.log("Needs to load VTF folder");
+
+        const vtfList = document.getElementById("inner-addon-vtf-vmt-list");
+        const vtfListDetail = document.getElementById("inner-addon-vtf-vmt-list-detail");
+        vtfListDetail.style.display = "none";
+        await addonInfoBusy("garrympn-addon-list-vtf", "Reading materials folder...", async () => {
+            // read folder
+            const folderContents = await GarryMPN.readFolder(materialsFolder);
+            const vtfContents = folderContents.filter(file => file.endsWith(".vtf"));
+            vtfListDetail.style.display = "";
+            listVtfOptions.splice(0, listVtfOptions.length);
+
+            if (vtfContents.length <= 0) {
+                vtfListDetail.innerText = "No VTF textures found.";
+                return;
+            } else {
+                vtfListDetail.innerText = "Textures List";
+            }
+
+            // for each texture, make the options & then elements & stuff
+            vtfList.innerHTML = "";
+            for (const texture of vtfContents) {
+                // make options
+                const options = await listVtfOption(materialsFolder, texture);
+
+                listVtfOptions.push(options);
+
+                // make element
+                const element = await listVtfItem(texture, materialsFolder, options);
+                vtfList.appendChild(element);
+            }
+
+            // done
+            UtilAlert.showAlert("alert", "Textures found, adjust settings for the addon.");
+        }, "View the textures list for options.");
     };
 
     // buttons
@@ -767,8 +882,8 @@
                 const { output, warning } = await GarryMPN.invokeCli(options);
                 if (warning) addonWarning(false, true, warning);
             });
+            // make icons
             if ((mdl.npcFriendlyIconMake && mdl.npcFriendlyIconPath) || (mdl.npcHostileIconMake && mdl.npcHostileIconPath)) {
-                // make icons
                 const targetFolder = await path.join(outputFolder, "materials/entities/");
                 await addonInfoBusy("garrympn-addon-build-icons", `Making icons for "${modelId}"`, async () => {
                     // make folder
@@ -807,6 +922,7 @@
                     if (warning) addonWarning(false, true, warning);
                 });
             }
+            addonInfoText.innerText = "Finished generating addon.";
         }
     };
 
