@@ -3,11 +3,13 @@
 [x] add basic vmt gen
 [x] add lua gen
 [x] add gui icon gen
-[ ] add gui vmt gen
+[x] add gui vmt gen
+[ ] add the other implemented cli vmt gen stuff to gui
+[ ] add phong to vmt gen
 [ ] add gui
+[ ] make gui manual
 
 # For later
-[ ] add phong to vmt gen
 [ ] allow vmt gen to add everything source supports for materials
 [ ] actually verify vmt gen can do everything it supports
 [ ] convert images to vtf automatically

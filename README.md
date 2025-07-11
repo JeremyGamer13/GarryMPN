@@ -3,7 +3,7 @@ Make simple Player Model & NPC Garry's Mod addon structures with an MDL model an
 
 # Notice
 This program is not complete yet.
-As of now the GUI only generates proper addons if you have a materials folder with VMT files already inside.
+As of now the GUI does not let you configure many VMT options, including basic settings like bump maps, surface properties or phong.
 
 When there is a proper v1.0.0 release out, this notice will disappear.
 
