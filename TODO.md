@@ -7,7 +7,7 @@
 [ ] add the other implemented cli vmt gen stuff to gui
 [ ] add phong to vmt gen
 [ ] add gui
-[ ] make gui manual
+[ ] make a manual on how to use the gui
 
 # For later
 [ ] allow vmt gen to add everything source supports for materials
