@@ -31,12 +31,17 @@
             "to": "LICENSE.garrympn.txt"
         },
         {
-            "from": "README.gui.md",
+            "from": "README.gui.txt",
             "to": "README.txt"
         },
         {
             "from": "README.gui.md",
             "to": "README.md"
+        },
+        "MANUAL.md",
+        {
+            "from": "MANUAL.md",
+            "to": "MANUAL.txt"
         }
     ],
     "files": [
