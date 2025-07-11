@@ -13,6 +13,7 @@
 
 .inner-addon-file-picker,
 #inner-addon-model-list > div label,
+#inner-addon-vtf-vmt-list > div label,
 .inner-addon-model-icon-options-overlay label {
     width: 100%;
 
@@ -23,10 +24,16 @@
 }
 .inner-addon-file-picker input[type="text"],
 .inner-addon-file-picker input[type="number"],
+.inner-addon-file-picker select,
 #inner-addon-model-list > div label input[type="text"],
 #inner-addon-model-list > div label input[type="number"],
+#inner-addon-model-list > div label select,
+#inner-addon-vtf-vmt-list > div label input[type="text"],
+#inner-addon-vtf-vmt-list > div label input[type="number"],
+#inner-addon-vtf-vmt-list > div label select,
 .inner-addon-model-icon-options-overlay label input[type="text"],
-.inner-addon-model-icon-options-overlay label input[type="number"] {
+.inner-addon-model-icon-options-overlay label input[type="number"],
+.inner-addon-model-icon-options-overlay label select {
     min-width: 0;
     padding: 3px 0;
     margin-right: 4px;
@@ -41,7 +48,8 @@
     resize: vertical;
 }
 
-#inner-addon-model-list {
+#inner-addon-model-list,
+#inner-addon-vtf-vmt-list {
     width: 100%;
 
     display: flex;
@@ -50,7 +58,8 @@
 
     gap: 4px;
 }
-#inner-addon-model-list > div {
+#inner-addon-model-list > div,
+#inner-addon-vtf-vmt-list > div {
     width: 100%;
     height: fit-content;
     max-width: 512px;
@@ -66,7 +75,14 @@
 #inner-addon-model-list h4,
 #inner-addon-model-list h5,
 #inner-addon-model-list h6,
-#inner-addon-model-list p {
+#inner-addon-model-list p,
+#inner-addon-vtf-vmt-list h1,
+#inner-addon-vtf-vmt-list h2,
+#inner-addon-vtf-vmt-list h3,
+#inner-addon-vtf-vmt-list h4,
+#inner-addon-vtf-vmt-list h5,
+#inner-addon-vtf-vmt-list h6,
+#inner-addon-vtf-vmt-list p {
     margin-block: 4px;
 }
 
@@ -104,4 +120,16 @@
 }
 .inner-addon-model-icon-options-resizers > label > input {
     margin-right: 4px;
+}
+@media (width <= 880px) {
+    .inner-addon-model-icon-options-faces,
+    .inner-addon-model-icon-options-resizers {
+        flex-direction: column;
+    }
+    .inner-addon-model-icon-options-overlay {
+        width: calc(100% - (4px + 8px + 2px));
+    }
+    .inner-addon-model-icon-options-resizers > label {
+        width: 100%;
+    }
 }

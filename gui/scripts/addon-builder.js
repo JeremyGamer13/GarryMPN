@@ -64,11 +64,11 @@
             input.value = chosenPath;
             // make the lists update (the functions will check if we need to reload)
             listMdlFromFolder(inputFolderModels.value);
+            listVtfFromFolder(inputFolderMaterials.value);
         };
     }
-    inputFolderModels.onblur = () => {
-        listMdlFromFolder(inputFolderModels.value);
-    };
+    inputFolderModels.onblur = () => listMdlFromFolder(inputFolderModels.value);
+    inputFolderMaterials.onblur = () => listVtfFromFolder(inputFolderMaterials.value);
     // model-icon-options paths
     for (const input of [
         inputIconFriendlyFront,
@@ -612,6 +612,7 @@
     };
 
     // vtf list
+    let makeVmts = false;
     let listVtfTarget = ""; // which folder is loaded right now
     const listVtfOptions = [];
     const listVtfOption = async (materialsFolder, filePath) => {
@@ -628,7 +629,9 @@
             coreGmodPath: gmodPath,
             coreFileNameNoExt: nameNoExt,
             ignored: false,
-            textureType: "VertexlitGeneric"
+            textureType: "VertexLitGeneric",
+            textureBase: await path.relative(materialsFolder, String(filePath.split(".").slice(0, -1).join("."))),
+            texturePath: await path.relative(materialsFolder, String(filePath.split(".").slice(0, -1).join(".")) + ".vmt"),
         };
         return options;
     };
@@ -638,11 +641,11 @@
 
         const texture = document.createElement("div");
         const textureTitle = document.createElement("h3");
-        const texturePath = document.createElement("p");
+        const texturePathDisplay = document.createElement("p");
         textureTitle.innerText = fileName;
-        texturePath.classList.add("style-small");
-        texturePath.classList.add("style-far");
-        texturePath.innerText = gmodPath;
+        texturePathDisplay.classList.add("style-small");
+        texturePathDisplay.classList.add("style-far");
+        texturePathDisplay.innerText = gmodPath;
 
         // make sections
         const sectionTexture = document.createElement("div");
@@ -657,18 +660,40 @@
         ignored.checked = options.ignored;
         labelIgnored.appendChild(ignored);
         labelIgnored.appendChild(document.createTextNode("Don't make VMT?"));
+        const labelTexturePath = document.createElement("label");
+        const texturePath = document.createElement("input");
+        labelTexturePath.innerText = "Save to:";
+        texturePath.type = "text";
+        texturePath.onblur = () => { options.texturePath = texturePath.value; updated(); };
+        texturePath.oninput = () => { options.texturePath = texturePath.value; updated(); };
+        texturePath.value = options.texturePath;
+        labelTexturePath.appendChild(texturePath);
+        sectionTexture.appendChild(labelTexturePath);
         const labelTextureType = document.createElement("label");
         const textureType = document.createElement("select");
         labelTextureType.innerText = "Material Type:";
         textureType.onblur = () => { options.textureType = textureType.value; updated(); };
         textureType.onchange = () => { options.textureType = textureType.value; updated(); };
         textureType.value = options.textureType;
-        const optionTextureTypeVertexlitGeneric = document.createElement("option");
-        optionTextureTypeVertexlitGeneric.innerText = "Vertex Lit";
-        optionTextureTypeVertexlitGeneric.value = "VertexlitGeneric";
-        textureType.appendChild(optionTextureTypeVertexlitGeneric);
+        const optionTextureTypeVertexLitGeneric = document.createElement("option");
+        optionTextureTypeVertexLitGeneric.innerText = "Vertex Lit";
+        optionTextureTypeVertexLitGeneric.value = "VertexLitGeneric";
+        const optionTextureTypeUnlitGeneric = document.createElement("option");
+        optionTextureTypeUnlitGeneric.innerText = "Unlit";
+        optionTextureTypeUnlitGeneric.value = "UnlitGeneric";
+        textureType.appendChild(optionTextureTypeVertexLitGeneric);
+        textureType.appendChild(optionTextureTypeUnlitGeneric);
         labelTextureType.appendChild(textureType);
         sectionTexture.appendChild(labelTextureType);
+        const labelTextureBase = document.createElement("label");
+        const textureBase = document.createElement("input");
+        labelTextureBase.innerText = "Texture:";
+        textureBase.type = "text";
+        textureBase.onblur = () => { options.textureBase = textureBase.value; updated(); };
+        textureBase.oninput = () => { options.textureBase = textureBase.value; updated(); };
+        textureBase.value = options.textureBase;
+        labelTextureBase.appendChild(textureBase);
+        sectionTexture.appendChild(labelTextureBase);
         // other sections
         // sectionTexture.appendChild(sectionPlayer);
 
@@ -679,7 +704,7 @@
 
         // add all of the children
         texture.appendChild(textureTitle);
-        texture.appendChild(texturePath);
+        texture.appendChild(texturePathDisplay);
         texture.appendChild(labelIgnored);
         texture.appendChild(sectionTexture);
         updated();
@@ -711,8 +736,12 @@
             vtfList.innerHTML = "";
             for (const texture of vtfContents) {
                 // make options
+                const nameNoExt = String(texture.split(".").slice(0, -1).join("."));
+                const hasExistingVmt = folderContents.includes(nameNoExt + ".vmt");
                 const options = await listVtfOption(materialsFolder, texture);
-
+                if (hasExistingVmt) {
+                    options.ignored = true;
+                }
                 listVtfOptions.push(options);
 
                 // make element
@@ -721,8 +750,22 @@
             }
 
             // done
-            UtilAlert.showAlert("alert", "Textures found, adjust settings for the addon.");
+            if (makeVmts) {
+                UtilAlert.showAlert("alert", "Textures found, adjust settings for the addon.");
+            }
         }, "View the textures list for options.");
+    };
+
+    const containerVmtList = document.getElementById("inner-addon-vtf-vmt-list-container");
+    const inputMakeVmts = document.getElementById("inner-addon-make-vmts");
+    containerVmtList.style.display = "none";
+    inputMakeVmts.onchange = () => {
+        makeVmts = inputMakeVmts.checked;
+        if (makeVmts) {
+            containerVmtList.style.display = "";
+        } else {
+            containerVmtList.style.display = "none";
+        }
     };
 
     // buttons
@@ -816,6 +859,7 @@
             // make lua folder
             await GarryMPN.invokeCli({ mkdir: luaFolder });
         });
+        // make models
         for (const mdl of listMdlOptions) {
             if (mdl.ignored) continue;
             const modelId = mdl.coreFileNameNoExt;
@@ -922,8 +966,28 @@
                     if (warning) addonWarning(false, true, warning);
                 });
             }
-            addonInfoText.innerText = "Finished generating addon.";
         }
+        // make materials
+        if (makeVmts) {
+            for (const vtf of listVtfOptions) {
+                if (vtf.ignored) continue;
+                const textureName = vtf.coreFileNameNoExt;
+                const targetFile = await path.join(outputFolder, "materials/", vtf.texturePath);
+                const targetFolder = await path.dirname(targetFile);
+                await addonInfoBusy("garrympn-addon-build-vmts", `Generating vmt file for "${textureName}"`, async () => {
+                    // make folder
+                    await GarryMPN.invokeCli({ mkdir: targetFolder });
+                    // make icons
+                    const options = {};
+                    options.vmt = vtf.textureType;
+                    options.vmto = targetFile;
+                    options.vmtb = vtf.textureBase;
+                    const { output, warning } = await GarryMPN.invokeCli(options);
+                    if (warning) addonWarning(false, true, warning);
+                });
+            }
+        }
+        addonInfoText.innerText = "Finished generating addon.";
     };
 
     document.addEventListener("garrympn-tab-updated", (event) => {
