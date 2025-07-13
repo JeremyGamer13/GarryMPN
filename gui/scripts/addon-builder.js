@@ -982,6 +982,9 @@
                     options.vmt = vtf.textureType;
                     options.vmto = targetFile;
                     options.vmtb = vtf.textureBase;
+                    if (vtf.textureType === "UnlitGeneric") {
+                        options.vmtm = true;
+                    }
                     const { output, warning } = await GarryMPN.invokeCli(options);
                     if (warning) addonWarning(false, true, warning);
                 });
