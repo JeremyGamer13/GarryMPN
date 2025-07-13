@@ -43,7 +43,8 @@ GarryMPN.showOpenFileDialog = async (title, filters, autofill, removeAny) => {
     return await electron.ipcRenderer.invoke("garrympn-picker-file", { title, filters: addedFilters });
 };
 GarryMPN.readFolder = async (path) => {
-    return await electron.ipcRenderer.invoke("garrympn-read-folder", path);
+    const result = await electron.ipcRenderer.invoke("garrympn-read-folder", path);
+    return result || [];
 };
 GarryMPN.locatePath = async (path) => {
     return await electron.ipcRenderer.invoke("garrympn-locate", path);

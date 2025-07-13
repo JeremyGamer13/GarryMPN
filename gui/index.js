@@ -134,8 +134,15 @@ const createIpcHandlers = () => {
 
         // make the folder if it doesnt exist
         const folderPath = filePaths[0];
+        if (!folderPath) return false;
+
+        const normalizedPath = path.resolve(folderPath);
+        const parsed = path.parse(normalizedPath);
+        const isRoot = normalizedPath === parsed.root;
+        if (isRoot) return false;
+
         if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath, { recursive: true });
-        return folderPath ? folderPath : false;
+        return folderPath;
     });
     electron.ipcMain.handle("garrympn-picker-file", async (event, options) => {
         if (!validateIpcEvent(event)) return;
@@ -155,9 +162,17 @@ const createIpcHandlers = () => {
             return electron.shell.showItemInFolder(path);
         }
     });
-    electron.ipcMain.handle("garrympn-read-folder", async (event, path) => {
+    electron.ipcMain.handle("garrympn-read-folder", async (event, folderPath) => {
         if (!validateIpcEvent(event)) return;
-        const files = await glob.glob(`${path}/**/*`, {
+        if (!folderPath) return;
+        if (!path.isAbsolute(folderPath)) return;
+
+        const normalizedPath = path.resolve(folderPath);
+        const parsed = path.parse(normalizedPath);
+        const isRoot = normalizedPath === parsed.root;
+        if (isRoot) return;
+
+        const files = await glob.glob(`${folderPath}/**/*`, {
             nodir: false,
             absolute: true,
             dot: true,
