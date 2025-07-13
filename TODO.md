@@ -5,7 +5,7 @@
 [x] add gui icon gen
 [x] add gui vmt gen
 [ ] add the other implemented cli vmt gen stuff to gui
-[ ] add phong to vmt gen
+[x] add phong to vmt gen
 [ ] add gui
 [ ] make a manual on how to use the gui
 

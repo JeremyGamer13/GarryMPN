@@ -44,7 +44,7 @@ for (let i = 0; i < exeArgv.length; i++) {
             GarryMPN.deleteAddonFolder(exeParams.deladdon);
         }
         // gmod/source specific not simples
-        // vmt, vmto optionally vmtr, vmtb, vmtm, vmtsp, vmtem, vmtbm, vmtd, vmtds, vmtsi, vmtsim
+        // vmt, vmto optionally vmtr, vmtb, vmtm, vmtsp, vmtem, vmtbm, vmtd, vmtds, vmtsi, vmtsim, vmtp, vmtpe, vmtpet, vmtpb, vmtpfr
         if (param === "vmt") {
             if (!exeParams.vmto) throw new Error("Specify vmto for a target VMT path to output the VMT to");
             const options = {};
@@ -58,6 +58,11 @@ for (let i = 0; i < exeArgv.length; i++) {
             if (exeParams.vmtds) options.detailScale = Number(exeParams.vmtds);
             if (Object.hasOwn(exeParams, "vmtsi")) options.selfIllumination = true;
             if (exeParams.vmtsim) options.selfIlluminationMask = exeParams.vmtsim;
+            if (Object.hasOwn(exeParams, "vmtp")) options.phong = exeParams.vmtp;
+            if (exeParams.vmtpe) options.phongExponent = Number(exeParams.vmtpe);
+            if (exeParams.vmtpet) options.phongExponentTexture = exeParams.vmtpet;
+            if (exeParams.vmtpb) options.phongBoost = Number(exeParams.vmtpb);
+            if (exeParams.vmtpfr) options.phongFresnelRanges = exeParams.vmtpfr;
             GarryMPN.vmtMake(exeParams.vmt, exeParams.vmto, options);
         }
         // lua optionally luar, luapm, luapmn, luaph, luaphs, luaphb, luaphm,
