@@ -45,7 +45,7 @@ module.exports = (shaderType, outPath, options = {}) => {
         vmtLines.push(`$model 1`);
     }
 
-    // phong
+    // phong, phongExponent, phongExponentTexture, phongBoost, phongFresnelRanges
     if (options.phong) {
         if (!["VertexLitGeneric", "LightmappedGeneric", "WorldVertexTransition"].includes(shaderType)) throw new Error("phong not supported in " + shaderType);
         vmtLines.push(`$phong 1`);
@@ -66,6 +66,18 @@ module.exports = (shaderType, outPath, options = {}) => {
     if (options.phongFresnelRanges) {
         if (!["VertexLitGeneric", "LightmappedGeneric", "WorldVertexTransition"].includes(shaderType)) throw new Error("phongFresnelRanges not supported in " + shaderType);
         vmtLines.push(`$phongfresnelranges ${quotes(options.phongFresnelRanges)}`);
+    }
+
+    // translucent, alpha, ignoreZ
+    if (options.translucent) {
+        vmtLines.push(`$translucent 1`);
+    }
+    if (options.alpha) {
+        if (!isFinite(options.alpha)) throw new Error("alpha is not finite");
+        vmtLines.push(`$alpha ${options.alpha}`);
+    }
+    if (options.ignoreZ) {
+        vmtLines.push(`$ignorez 1`);
     }
 
     // raw lines at the end
