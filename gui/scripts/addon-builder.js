@@ -632,6 +632,33 @@
             textureType: "VertexLitGeneric",
             textureBase: await path.relative(materialsFolder, String(filePath.split(".").slice(0, -1).join("."))),
             texturePath: await path.relative(materialsFolder, String(filePath.split(".").slice(0, -1).join(".")) + ".vmt"),
+            environmentMap: await path.relative(materialsFolder, await path.dirname(filePath)),
+            environmentMapEnabled: false,
+            bumpMap: await path.relative(materialsFolder, await path.dirname(filePath)),
+            bumpMapEnabled: false,
+            advancedOptions: false,
+            surfaceProp: "flesh",
+            surfacePropEnabled: false,
+            detail: await path.relative(materialsFolder, await path.dirname(filePath)),
+            detailScale: 4,
+            detailEnabled: false,
+            detailScaleEnabled: true,
+            selfIllumination: false,
+            selfIlluminationMask: await path.relative(materialsFolder, await path.dirname(filePath)),
+            selfIlluminationMaskEnabled: false,
+            translucent: false,
+            alpha: 1,
+            alphaEnabled: false,
+            ignoreZ: false,
+            phong: false,
+            phongExponent: 1,
+            phongExponentEnabled: false,
+            phongExponentTexture: await path.relative(materialsFolder, await path.dirname(filePath)),
+            phongExponentTextureEnabled: false,
+            phongBoost: 1,
+            phongBoostEnabled: false,
+            phongFresnelRanges: "[0 0.5 1]",
+            phongFresnelRangesEnabled: false,
         };
         return options;
     };
@@ -649,6 +676,8 @@
 
         // make sections
         const sectionTexture = document.createElement("div");
+        const sectionAdvanced = document.createElement("div");
+        const sectionPhong = document.createElement("div");
 
         // make inputs
         // default & texture section
@@ -694,12 +723,251 @@
         textureBase.value = options.textureBase;
         labelTextureBase.appendChild(textureBase);
         sectionTexture.appendChild(labelTextureBase);
+        const labelEnvironmentMap = document.createElement("label");
+        const checkboxEnvironmentMap = document.createElement("input");
+        const environmentMap = document.createElement("input");
+        labelEnvironmentMap.innerText = "Environment Map:";
+        checkboxEnvironmentMap.type = "checkbox";
+        checkboxEnvironmentMap.onblur = () => { options.environmentMapEnabled = checkboxEnvironmentMap.checked; updated(); };
+        checkboxEnvironmentMap.onchange = () => { options.environmentMapEnabled = checkboxEnvironmentMap.checked; updated(); };
+        checkboxEnvironmentMap.checked = options.environmentMapEnabled;
+        environmentMap.type = "text";
+        environmentMap.onblur = () => { options.environmentMap = environmentMap.value; updated(); };
+        environmentMap.oninput = () => { options.environmentMap = environmentMap.value; updated(); };
+        environmentMap.value = options.environmentMap;
+        labelEnvironmentMap.appendChild(checkboxEnvironmentMap);
+        labelEnvironmentMap.appendChild(environmentMap);
+        sectionTexture.appendChild(labelEnvironmentMap);
+        const labelBumpMap = document.createElement("label");
+        const checkboxBumpMap = document.createElement("input");
+        const bumpMap = document.createElement("input");
+        labelBumpMap.innerText = "Bump Map:";
+        checkboxBumpMap.type = "checkbox";
+        checkboxBumpMap.onblur = () => { options.bumpMapEnabled = checkboxBumpMap.checked; updated(); };
+        checkboxBumpMap.onchange = () => { options.bumpMapEnabled = checkboxBumpMap.checked; updated(); };
+        checkboxBumpMap.checked = options.bumpMapEnabled;
+        bumpMap.type = "text";
+        bumpMap.onblur = () => { options.bumpMap = bumpMap.value; updated(); };
+        bumpMap.oninput = () => { options.bumpMap = bumpMap.value; updated(); };
+        bumpMap.value = options.bumpMap;
+        labelBumpMap.appendChild(checkboxBumpMap);
+        labelBumpMap.appendChild(bumpMap);
+        sectionTexture.appendChild(labelBumpMap);
+        const labelAdvancedOptions = document.createElement("label");
+        const advancedOptions = document.createElement("input");
+        advancedOptions.type = "checkbox";
+        advancedOptions.onblur = () => { options.advancedOptions = advancedOptions.checked; updated(); };
+        advancedOptions.onchange = () => { options.advancedOptions = advancedOptions.checked; updated(); };
+        advancedOptions.checked = options.advancedOptions;
+        labelAdvancedOptions.appendChild(advancedOptions);
+        labelAdvancedOptions.appendChild(document.createTextNode("Use Advanced Options?"));
+        sectionTexture.appendChild(labelAdvancedOptions);
+        // advanced
+        const labelSurfaceProp = document.createElement("label");
+        const checkboxSurfaceProp = document.createElement("input");
+        const surfaceProp = document.createElement("input");
+        labelSurfaceProp.innerText = "Surface Type:";
+        checkboxSurfaceProp.type = "checkbox";
+        checkboxSurfaceProp.onblur = () => { options.surfacePropEnabled = checkboxSurfaceProp.checked; updated(); };
+        checkboxSurfaceProp.onchange = () => { options.surfacePropEnabled = checkboxSurfaceProp.checked; updated(); };
+        checkboxSurfaceProp.checked = options.surfacePropEnabled;
+        surfaceProp.type = "text";
+        surfaceProp.onblur = () => { options.surfaceProp = surfaceProp.value; updated(); };
+        surfaceProp.oninput = () => { options.surfaceProp = surfaceProp.value; updated(); };
+        surfaceProp.value = options.surfaceProp;
+        labelSurfaceProp.appendChild(checkboxSurfaceProp);
+        labelSurfaceProp.appendChild(surfaceProp);
+        sectionAdvanced.appendChild(labelSurfaceProp);
+        const labelDetail = document.createElement("label");
+        const checkboxDetail = document.createElement("input");
+        const detail = document.createElement("input");
+        labelDetail.innerText = "Detail Texture:";
+        checkboxDetail.type = "checkbox";
+        checkboxDetail.onblur = () => { options.detailEnabled = checkboxDetail.checked; updated(); };
+        checkboxDetail.onchange = () => { options.detailEnabled = checkboxDetail.checked; updated(); };
+        checkboxDetail.checked = options.detailEnabled;
+        detail.type = "text";
+        detail.onblur = () => { options.detail = detail.value; updated(); };
+        detail.oninput = () => { options.detail = detail.value; updated(); };
+        detail.value = options.detail;
+        labelDetail.appendChild(checkboxDetail);
+        labelDetail.appendChild(detail);
+        sectionAdvanced.appendChild(labelDetail);
+        const labelDetailScale = document.createElement("label");
+        const checkboxDetailScale = document.createElement("input");
+        const detailScale = document.createElement("input");
+        labelDetailScale.innerText = "Detail Scale:";
+        checkboxDetailScale.type = "checkbox";
+        checkboxDetailScale.onblur = () => { options.detailScaleEnabled = checkboxDetailScale.checked; updated(); };
+        checkboxDetailScale.onchange = () => { options.detailScaleEnabled = checkboxDetailScale.checked; updated(); };
+        checkboxDetailScale.checked = options.detailScaleEnabled;
+        detailScale.type = "number";
+        detailScale.onblur = () => { options.detailScale = detailScale.value; updated(); };
+        detailScale.oninput = () => { options.detailScale = detailScale.value; updated(); };
+        detailScale.value = options.detailScale;
+        detailScale.step = 0.1;
+        labelDetailScale.appendChild(checkboxDetailScale);
+        labelDetailScale.appendChild(detailScale);
+        sectionAdvanced.appendChild(labelDetailScale);
+        const labelSelfIllumination = document.createElement("label");
+        const selfIllumination = document.createElement("input");
+        selfIllumination.type = "checkbox";
+        selfIllumination.onblur = () => { options.selfIllumination = selfIllumination.checked; updated(); };
+        selfIllumination.onchange = () => { options.selfIllumination = selfIllumination.checked; updated(); };
+        selfIllumination.checked = options.selfIllumination;
+        labelSelfIllumination.appendChild(selfIllumination);
+        labelSelfIllumination.appendChild(document.createTextNode("Self Illuminate?"));
+        sectionAdvanced.appendChild(labelSelfIllumination);
+        const labelSelfIlluminationMask = document.createElement("label");
+        const checkboxSelfIlluminationMask = document.createElement("input");
+        const selfIlluminationMask = document.createElement("input");
+        labelSelfIlluminationMask.innerText = "Self Illumination Mask:";
+        checkboxSelfIlluminationMask.type = "checkbox";
+        checkboxSelfIlluminationMask.onblur = () => { options.selfIlluminationMaskEnabled = checkboxSelfIlluminationMask.checked; updated(); };
+        checkboxSelfIlluminationMask.onchange = () => { options.selfIlluminationMaskEnabled = checkboxSelfIlluminationMask.checked; updated(); };
+        checkboxSelfIlluminationMask.checked = options.selfIlluminationMaskEnabled;
+        selfIlluminationMask.type = "text";
+        selfIlluminationMask.onblur = () => { options.selfIlluminationMask = selfIlluminationMask.value; updated(); };
+        selfIlluminationMask.oninput = () => { options.selfIlluminationMask = selfIlluminationMask.value; updated(); };
+        selfIlluminationMask.value = options.selfIlluminationMask;
+        labelSelfIlluminationMask.appendChild(checkboxSelfIlluminationMask);
+        labelSelfIlluminationMask.appendChild(selfIlluminationMask);
+        sectionAdvanced.appendChild(labelSelfIlluminationMask);
+        const labelTranslucent = document.createElement("label");
+        const translucent = document.createElement("input");
+        translucent.type = "checkbox";
+        translucent.onblur = () => { options.translucent = translucent.checked; updated(); };
+        translucent.onchange = () => { options.translucent = translucent.checked; updated(); };
+        translucent.checked = options.translucent;
+        labelTranslucent.appendChild(translucent);
+        labelTranslucent.appendChild(document.createTextNode("Translucent?"));
+        sectionAdvanced.appendChild(labelTranslucent);
+        const labelAlpha = document.createElement("label");
+        const checkboxAlpha = document.createElement("input");
+        const alpha = document.createElement("input");
+        labelAlpha.innerText = "Alpha Scale:";
+        checkboxAlpha.type = "checkbox";
+        checkboxAlpha.onblur = () => { options.alphaEnabled = checkboxAlpha.checked; updated(); };
+        checkboxAlpha.onchange = () => { options.alphaEnabled = checkboxAlpha.checked; updated(); };
+        checkboxAlpha.checked = options.alphaEnabled;
+        alpha.type = "number";
+        alpha.onblur = () => { options.alpha = alpha.value; updated(); };
+        alpha.oninput = () => { options.alpha = alpha.value; updated(); };
+        alpha.value = options.alpha;
+        alpha.step = 0.1;
+        labelAlpha.appendChild(checkboxAlpha);
+        labelAlpha.appendChild(alpha);
+        sectionAdvanced.appendChild(labelAlpha);
+        const labelIgnoreZ = document.createElement("label");
+        const ignoreZ = document.createElement("input");
+        ignoreZ.type = "checkbox";
+        ignoreZ.onblur = () => { options.ignoreZ = ignoreZ.checked; updated(); };
+        ignoreZ.onchange = () => { options.ignoreZ = ignoreZ.checked; updated(); };
+        ignoreZ.checked = options.ignoreZ;
+        labelIgnoreZ.appendChild(ignoreZ);
+        labelIgnoreZ.appendChild(document.createTextNode("Ignore Z Axis?"));
+        sectionAdvanced.appendChild(labelIgnoreZ);
+        const labelPhong = document.createElement("label");
+        const phong = document.createElement("input");
+        phong.type = "checkbox";
+        phong.onblur = () => { options.phong = phong.checked; updated(); };
+        phong.onchange = () => { options.phong = phong.checked; updated(); };
+        phong.checked = options.phong;
+        labelPhong.appendChild(phong);
+        labelPhong.appendChild(document.createTextNode("Phong?"));
+        sectionAdvanced.appendChild(labelPhong);
+        // phong
+        const labelPhongExponent = document.createElement("label");
+        const checkboxPhongExponent = document.createElement("input");
+        const phongExponent = document.createElement("input");
+        labelPhongExponent.innerText = "Phong Exponent:";
+        checkboxPhongExponent.type = "checkbox";
+        checkboxPhongExponent.onblur = () => { options.phongExponentEnabled = checkboxPhongExponent.checked; updated(); };
+        checkboxPhongExponent.onchange = () => { options.phongExponentEnabled = checkboxPhongExponent.checked; updated(); };
+        checkboxPhongExponent.checked = options.phongExponentEnabled;
+        phongExponent.type = "number";
+        phongExponent.onblur = () => { options.phongExponent = phongExponent.value; updated(); };
+        phongExponent.oninput = () => { options.phongExponent = phongExponent.value; updated(); };
+        phongExponent.value = options.phongExponent;
+        phongExponent.step = 0.1;
+        labelPhongExponent.appendChild(checkboxPhongExponent);
+        labelPhongExponent.appendChild(phongExponent);
+        sectionPhong.appendChild(labelPhongExponent);
+        const labelPhongExponentTexture = document.createElement("label");
+        const checkboxPhongExponentTexture = document.createElement("input");
+        const phongExponentTexture = document.createElement("input");
+        labelPhongExponentTexture.innerText = "Phong Exponent Texture:";
+        checkboxPhongExponentTexture.type = "checkbox";
+        checkboxPhongExponentTexture.onblur = () => { options.phongExponentTextureEnabled = checkboxPhongExponentTexture.checked; updated(); };
+        checkboxPhongExponentTexture.onchange = () => { options.phongExponentTextureEnabled = checkboxPhongExponentTexture.checked; updated(); };
+        checkboxPhongExponentTexture.checked = options.phongExponentTextureEnabled;
+        phongExponentTexture.type = "text";
+        phongExponentTexture.onblur = () => { options.phongExponentTexture = phongExponentTexture.value; updated(); };
+        phongExponentTexture.oninput = () => { options.phongExponentTexture = phongExponentTexture.value; updated(); };
+        phongExponentTexture.value = options.phongExponentTexture;
+        labelPhongExponentTexture.appendChild(checkboxPhongExponentTexture);
+        labelPhongExponentTexture.appendChild(phongExponentTexture);
+        sectionPhong.appendChild(labelPhongExponentTexture);
+        const labelPhongBoost = document.createElement("label");
+        const checkboxPhongBoost = document.createElement("input");
+        const phongBoost = document.createElement("input");
+        labelPhongBoost.innerText = "Phong Boost:";
+        checkboxPhongBoost.type = "checkbox";
+        checkboxPhongBoost.onblur = () => { options.phongBoostEnabled = checkboxPhongBoost.checked; updated(); };
+        checkboxPhongBoost.onchange = () => { options.phongBoostEnabled = checkboxPhongBoost.checked; updated(); };
+        checkboxPhongBoost.checked = options.phongBoostEnabled;
+        phongBoost.type = "number";
+        phongBoost.onblur = () => { options.phongBoost = phongBoost.value; updated(); };
+        phongBoost.oninput = () => { options.phongBoost = phongBoost.value; updated(); };
+        phongBoost.value = options.phongBoost;
+        phongBoost.step = 0.1;
+        labelPhongBoost.appendChild(checkboxPhongBoost);
+        labelPhongBoost.appendChild(phongBoost);
+        sectionPhong.appendChild(labelPhongBoost);
+        const labelPhongFresnelRanges = document.createElement("label");
+        const checkboxPhongFresnelRanges = document.createElement("input");
+        const phongFresnelRanges = document.createElement("input");
+        labelPhongFresnelRanges.innerText = "Phong Fresnel Ranges:";
+        checkboxPhongFresnelRanges.type = "checkbox";
+        checkboxPhongFresnelRanges.onblur = () => { options.phongFresnelRangesEnabled = checkboxPhongFresnelRanges.checked; updated(); };
+        checkboxPhongFresnelRanges.onchange = () => { options.phongFresnelRangesEnabled = checkboxPhongFresnelRanges.checked; updated(); };
+        checkboxPhongFresnelRanges.checked = options.phongFresnelRangesEnabled;
+        phongFresnelRanges.type = "text";
+        phongFresnelRanges.onblur = () => { options.phongFresnelRanges = phongFresnelRanges.value; updated(); };
+        phongFresnelRanges.oninput = () => { options.phongFresnelRanges = phongFresnelRanges.value; updated(); };
+        phongFresnelRanges.value = options.phongFresnelRanges;
+        labelPhongFresnelRanges.appendChild(checkboxPhongFresnelRanges);
+        labelPhongFresnelRanges.appendChild(phongFresnelRanges);
+        sectionPhong.appendChild(labelPhongFresnelRanges);
         // other sections
-        // sectionTexture.appendChild(sectionPlayer);
+        sectionTexture.appendChild(sectionAdvanced);
+        sectionAdvanced.appendChild(sectionPhong);
 
         const updated = () => {
+            const supportedPhong = ["VertexLitGeneric", "LightmappedGeneric", "WorldVertexTransition"].includes(options.textureType);
+
             // sections
             sectionTexture.style.display = options.ignored ? "none" : "";
+            sectionAdvanced.style.display = !options.advancedOptions ? "none" : "";
+            sectionPhong.style.display = !options.phong || !supportedPhong ? "none" : "";
+
+            // hide input sections (labels)
+            labelDetailScale.style.display = !options.detailEnabled ? "none" : "";
+            labelSelfIlluminationMask.style.display = !options.selfIllumination ? "none" : "";
+            labelPhong.style.display = !supportedPhong ? "none" : "";
+
+            // hide inputs
+            environmentMap.style.display = !options.environmentMapEnabled ? "none" : "";
+            bumpMap.style.display = !options.bumpMapEnabled ? "none" : "";
+            surfaceProp.style.display = !options.surfacePropEnabled ? "none" : "";
+            detail.style.display = !options.detailEnabled ? "none" : "";
+            detailScale.style.display = !options.detailScaleEnabled ? "none" : "";
+            selfIlluminationMask.style.display = !options.selfIlluminationMaskEnabled ? "none" : "";
+            alpha.style.display = !options.alphaEnabled ? "none" : "";
+            phongExponent.style.display = !options.phongExponentEnabled ? "none" : "";
+            phongExponentTexture.style.display = !options.phongExponentTextureEnabled ? "none" : "";
+            phongBoost.style.display = !options.phongBoostEnabled ? "none" : "";
+            phongFresnelRanges.style.display = !options.phongFresnelRangesEnabled ? "none" : "";
         };
 
         // add all of the children
@@ -724,6 +992,7 @@
             const vtfContents = folderContents.filter(file => file.endsWith(".vtf"));
             vtfListDetail.style.display = "";
             listVtfOptions.splice(0, listVtfOptions.length);
+            vtfList.innerHTML = "";
 
             if (vtfContents.length <= 0) {
                 vtfListDetail.innerText = "No VTF textures found.";
@@ -733,7 +1002,6 @@
             }
 
             // for each texture, make the options & then elements & stuff
-            vtfList.innerHTML = "";
             for (const texture of vtfContents) {
                 // make options
                 const nameNoExt = String(texture.split(".").slice(0, -1).join("."));
@@ -977,14 +1245,67 @@
                 await addonInfoBusy("garrympn-addon-build-vmts", `Generating vmt file for "${textureName}"`, async () => {
                     // make folder
                     await GarryMPN.invokeCli({ mkdir: targetFolder });
-                    // make icons
+                    // make vmts
                     const options = {};
                     options.vmt = vtf.textureType;
                     options.vmto = targetFile;
-                    options.vmtb = vtf.textureBase;
                     if (vtf.textureType === "UnlitGeneric") {
                         options.vmtm = true;
                     }
+                    // user options
+                    // basic settings
+                    options.vmtb = vtf.textureBase;
+                    if (vtf.environmentMapEnabled) {
+                        options.vmtem = vtf.environmentMap;
+                    }
+                    if (vtf.bumpMapEnabled) {
+                        options.vmtbm = vtf.bumpMap;
+                    }
+                    // advanced
+                    if (vtf.advancedOptions) {
+                        if (vtf.surfacePropEnabled) {
+                            options.vmtsp = vtf.surfaceProp;
+                        }
+                        if (vtf.detailEnabled) {
+                            options.vmtd = vtf.detail;
+                            if (vtf.detailScaleEnabled) {
+                                options.vmtds = vtf.detailScale;
+                            }
+                        }
+                        if (vtf.selfIllumination) {
+                            options.vmtsi = true;
+                            if (vtf.selfIlluminationMaskEnabled) {
+                                options.vmtsim = vtf.selfIlluminationMask;
+                            }
+                        }
+                        if (vtf.translucent) {
+                            options.vmtt = true;
+                        }
+                        if (vtf.alphaEnabled) {
+                            options.vmta = vtf.alpha;
+                        }
+                        if (vtf.ignoreZ) {
+                            options.vmtz = true;
+                        }
+                        // phong
+                        const supportedPhong = ["VertexLitGeneric", "LightmappedGeneric", "WorldVertexTransition"].includes(vtf.textureType);
+                        if (supportedPhong && vtf.phong) {
+                            options.vmtp = true;
+                            if (vtf.phongExponentEnabled) {
+                                options.vmtpe = vtf.phongExponent;
+                            }
+                            if (vtf.phongExponentTextureEnabled) {
+                                options.vmtpet = vtf.phongExponentTexture;
+                            }
+                            if (vtf.phongBoostEnabled) {
+                                options.vmtpb = vtf.phongBoost;
+                            }
+                            if (vtf.phongFresnelRangesEnabled) {
+                                options.vmtpfr = vtf.phongFresnelRanges;
+                            }
+                        }
+                    }
+                    // cli
                     const { output, warning } = await GarryMPN.invokeCli(options);
                     if (warning) addonWarning(false, true, warning);
                 });

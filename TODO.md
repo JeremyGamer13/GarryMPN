@@ -4,7 +4,7 @@
 [x] add lua gen
 [x] add gui icon gen
 [x] add gui vmt gen
-[ ] add the other implemented cli vmt gen stuff to gui
+[x] add the other implemented cli vmt gen stuff to gui
 [x] add phong to vmt gen
 [ ] add gui
 [ ] make a manual on how to use the gui
