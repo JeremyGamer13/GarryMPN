@@ -10,6 +10,7 @@
         <link href="app://css/prompt" rel="stylesheet">
         <link href="app://css/home" rel="stylesheet">
         <link href="app://css/addon" rel="stylesheet">
+        <link href="app://css/vtf" rel="stylesheet">
     </head>
     <body>
         <div id="app-blur" data-enabled="false">
@@ -29,6 +30,7 @@
                 <div id="app-sidebar">
                     <button id="tab-home" data-tab="home">Home</button>
                     <button id="tab-addon" data-tab="addon">New Addon</button>
+                    <button id="tab-vtf" data-tab="vtf">VTF Converter</button>
                 </div>
                 <div id="app-tab" data-selected="none">
                     <div id="app-tab-home">
@@ -45,18 +47,32 @@
                             models and textures and making an addon out of those. You won't get
                             super complicated addons made with this program alone.
                         </p>
+                        <p>
+                            You can safely edit the output of GarryMPN's addons once made. Feel
+                            free to add your own logic or settings to the output files, or maybe
+                            make an issue on the GitHub repository requesting for your feature!
+                        </p>
                         <p>Developed by JeremyGamer13</p>
                         <img class="inner-home-contributor" alt="JeremyGamer13" src="https://github.com/JeremyGamer13.png">
                         <p class="style-small">
                             See <a href="https://github.com/JeremyGamer13/GarryMPN" target="_blank" style="color:white">GitHub</a>
                         </p>
-                        <br>
                         <p class="style-small">
                             Garry's Mod is a trademark of Facepunch Studios.
                             <br>
                             GarryMPN is an independent project and is not affiliated with, endorsed by, or sponsored by Facepunch Studios or Valve Corporation.
                             <br>
                             All trademarks are property of their respective owners.
+                        </p>
+                        <p class="style-small">
+                            VTFEdit is a .NET-based GUI tool for the creation and conversion of VTF and VMT files.
+                            <br>
+                            GarryMPN utilizes VTFCmd to convert PNG images to VTF files. VTFLib and it's default GPL applications are included within
+                            the program's files, with their original licenses and files attached.
+                            <br>
+                            VTFLib is an LGPL open source programming library, created by Neil "Jed" Jedrzejewski and Ryan "Nemesis" Gregg.
+                            <br>
+                            VTFCmd is a command-line based tool that allows you to convert standard image files into the Valve Texture Format (.VTF)
                         </p>
                         <p class="style-small style-far">
                             Version 1.0.0
@@ -175,6 +191,42 @@
                         <button id="inner-addon-quick-guess" style="background: #817;">Guess all options</button>
                         <button id="inner-addon-quick-delete" style="background:#f44">Delete Output Folder</button>
                     </div>
+                    <div id="app-tab-vtf" style="display: none;">
+                        <h1>VTF Converter</h1>
+                        <p id="inner-vtf-info" class="style-small">
+                            This is the VTF Converter menu. See inputs below.
+                        </p>
+                        <p id="inner-vtf-warning-label" class="style-small" style="display:none">
+                            An action left a warning, see the log below.
+                        </p>
+                        <textarea id="inner-vtf-warning" disabled style="display:none"></textarea>
+                        <button id="inner-vtf-warning-copy" style="display:none">Copy</button>
+
+                        <!-- inputs -->
+                        <p class="style-small">Refer to the MANUAL for instructions if you are lost.</p>
+                        <label class="inner-vtf-file-picker">
+                            <span>Output Folder:</span>
+                            <button id="inner-vtf-folder-output-browse">Browse</button>
+                            <input id="inner-vtf-folder-output" type="text" placeholder="Folder to fill with VTF textures">
+                        </label>
+                        <p class="style-small">Output folder will only be used automatically if you select it before the Image Folder.</p>
+                        <label class="inner-vtf-file-picker">
+                            <span>Image Folder:</span>
+                            <button id="inner-vtf-folder-images-browse">Browse</button>
+                            <input id="inner-vtf-folder-images" type="text" placeholder="Folder with images">
+                        </label>
+                        <div id="inner-vtf-image-list-container">
+                            <p id="inner-vtf-image-list-detail" class="style-small style-p-margin" style="display:none"></p>
+                            <div id="inner-vtf-image-list">
+                                <!-- lists all of the image files, with options on them for vtf gen -->
+                            </div>
+                        </div>
+
+                        <!-- quick actions -->
+                        <br><br>
+                        <button id="inner-vtf-quick-generate">Generate</button>
+                        <button id="inner-vtf-quick-locate" style="background:rgb(0, 150, 45)">Locate Output in Explorer</button>
+                    </div>
                 </div>
             </div>
         </main>
@@ -182,5 +234,6 @@
         <script src="app://js/util-alert"></script>
         <script src="app://js/"></script>
         <script src="app://js/addon-builder"></script>
+        <script src="app://js/vtf-converter"></script>
     </body>
 </html>

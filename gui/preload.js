@@ -18,6 +18,10 @@ GarryMPN.invokeCli = async (argsObj) => {
     console.log("invoking CLI", argsObj);
     return await electron.ipcRenderer.invoke("garrympn-invoke-cli", argsObj);
 };
+GarryMPN.invokeVtfCmd = async (argsObj) => {
+    console.log("invoking VTFCmd", argsObj);
+    return await electron.ipcRenderer.invoke("garrympn-invoke-vtfcmd", argsObj);
+};
 
 GarryMPN.showOpenFolderDialog = async (title) => {
     return await electron.ipcRenderer.invoke("garrympn-picker-folder", title);

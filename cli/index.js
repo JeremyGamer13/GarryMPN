@@ -114,5 +114,13 @@ for (let i = 0; i < exeArgv.length; i++) {
             if (Object.hasOwn(exeParams, "npciconhr")) options.resizeBase = true;
             await GarryMPN.npcIcon(exeParams.npciconh, exeParams.npciconhout, options);
         }
+        // png, pngo optionally pngw, pngh
+        if (param === "png") {
+            if (!exeParams.pngo) throw new Error("Specify pngo for a target PNG path to output the PNG image to");
+            const options = {};
+            if (exeParams.pngw) options.newWidth = Number(exeParams.pngw);
+            if (exeParams.pngh) options.newHeight = Number(exeParams.pngh);
+            await GarryMPN.toPng(exeParams.png, exeParams.pngo, options);
+        }
     }
 })();

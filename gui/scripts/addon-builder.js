@@ -81,7 +81,7 @@
         browseButton.onclick = async () => {
             const chosenPath = await GarryMPN.showOpenFileDialog(
                 input.placeholder,
-                [{ name: "Image", extensions: ["png", "jpeg", "jpg", "bmp", "webp"] }],
+                [{ name: "Image", extensions: ["png", "jpeg", "jpg", "bmp"] }],
                 true
             );
             if (!chosenPath) return;
@@ -335,7 +335,7 @@
         browseNpcFriendlyIconPath.onclick = async () => {
             const chosenPath = await GarryMPN.showOpenFileDialog(
                 npcFriendlyIconPath.placeholder,
-                [{ name: "Image", extensions: ["png", "jpeg", "jpg", "bmp", "webp"] }],
+                [{ name: "Image", extensions: ["png", "jpeg", "jpg", "bmp"] }],
                 true
             );
             if (!chosenPath) return;
@@ -442,7 +442,7 @@
         browseNpcHostileIconPath.onclick = async () => {
             const chosenPath = await GarryMPN.showOpenFileDialog(
                 npcHostileIconPath.placeholder,
-                [{ name: "Image", extensions: ["png", "jpeg", "jpg", "bmp", "webp"] }],
+                [{ name: "Image", extensions: ["png", "jpeg", "jpg", "bmp"] }],
                 true
             );
             if (!chosenPath) return;

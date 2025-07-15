@@ -48,6 +48,7 @@ const createProtocols = () => {
                 switch (url.pathname) {
                     case "/": return createResponseText("scripts/mainpage.js", "text/javascript");
                     case "/addon-builder": return createResponseText("scripts/addon-builder.js", "text/javascript");
+                    case "/vtf-converter": return createResponseText("scripts/vtf-converter.js", "text/javascript");
                     case "/util-loader": return createResponseText("scripts/util-loader.js", "text/javascript");
                     case "/util-alert": return createResponseText("scripts/util-alert.js", "text/javascript");
                 }
@@ -60,6 +61,7 @@ const createProtocols = () => {
                     case "/prompt": return createResponseText("css/prompt.css", "text/css");
                     case "/home": return createResponseText("css/home.css", "text/css");
                     case "/addon": return createResponseText("css/addon.css", "text/css");
+                    case "/vtf": return createResponseText("css/vtf.css", "text/css");
                 }
                 break;
             }
@@ -98,6 +100,9 @@ const createIpcHandlers = () => {
     const cliPath = devMode
         ? path.join(__dirname, '../build/garrympn-cli.exe')
         : path.join(path.dirname(process.execPath), 'garrympn-cli.exe');
+    const vtfCmdPath = devMode
+        ? path.join(__dirname, '../assets/vtflib/bin/x64/VTFCmd.exe')
+        : path.join(path.dirname(process.execPath), 'vtflib/bin/x64/VTFCmd.exe');
     const execFile = util.promisify(childProcess.execFile);
 
     // NOTE: Act like every handler can receive custom user input from literally anyone in the world, that's basically the security here
@@ -189,6 +194,23 @@ const createIpcHandlers = () => {
         }
 
         const {stdout, stderr} = await execFile(cliPath, cliArgs);
+        const properStdout = stdout.replace(/\r/g, "").trim();
+        const properStderr = stderr.replace(/\r/g, "").trim();
+        return {
+            output: properStdout,
+            warning: properStderr ? properStderr : null, // "" === false
+        };
+    });
+    electron.ipcMain.handle("garrympn-invoke-vtfcmd", async (event, argsObj) => {
+        if (!validateIpcEvent(event)) return;
+        const vtfCmdArgs = [];
+        for (const key in argsObj) {
+            const value = argsObj[key];
+            vtfCmdArgs.push(key);
+            if (value) vtfCmdArgs.push(value);
+        }
+
+        const { stdout, stderr } = await execFile(vtfCmdPath, vtfCmdArgs);
         const properStdout = stdout.replace(/\r/g, "").trim();
         const properStderr = stderr.replace(/\r/g, "").trim();
         return {

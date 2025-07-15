@@ -9,5 +9,8 @@ cache/*
 build/*
 dist/*
 
+# build assets (external assets needed for the build, but cant be included in this repo)
+assets/vtflib/*
+
 # dev temp files
 .dev/*

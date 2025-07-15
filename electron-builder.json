@@ -42,6 +42,14 @@
         {
             "from": "MANUAL.md",
             "to": "MANUAL.txt"
+        },
+        {
+            "from": "assets",
+            "to": ".",
+            "filter": [
+                "**/*",
+                "!README.md"
+            ]
         }
     ],
     "files": [

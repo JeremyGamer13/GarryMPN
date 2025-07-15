@@ -1,3 +1,4 @@
+const toPng = require("./to-png");
 const npcIcon = require("./npc-icon");
 const luaMake = require("./lua-make");
 const vmtMake = require("./vmt-make");
@@ -7,6 +8,7 @@ const makeFolder = require("./make-folder");
 const deleteAddonFolder = require("./delete-addon-folder");
 
 module.exports = {
+    toPng,
     npcIcon,
     luaMake,
     vmtMake,
